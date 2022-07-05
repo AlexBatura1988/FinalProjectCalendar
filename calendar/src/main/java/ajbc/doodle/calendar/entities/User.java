@@ -22,11 +22,12 @@ import lombok.ToString;
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Integer emailId;
 	private String firstName;
 	private String lastName;
 	private String email;
 	private LocalDate birthDate;
 	private LocalDate joinDate;
+	private Integer disable;
 
 }
