@@ -20,7 +20,7 @@ public interface UserDao {
 		throw new DaoException("Method not implemented");
 	}
 
-	public default User getProduct(Integer usertId) throws DaoException {
+	public default User getProduct(Integer userId) throws DaoException {
 		throw new DaoException("Method not implemented");
 	}
 	@Transactional(readOnly = false)
