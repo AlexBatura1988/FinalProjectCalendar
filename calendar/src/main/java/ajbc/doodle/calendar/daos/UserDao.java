@@ -20,11 +20,16 @@ public interface UserDao {
 		throw new DaoException("Method not implemented");
 	}
 
-	public default User getProduct(Integer userId) throws DaoException {
+	public default User getUser(Integer userId) throws DaoException {
 		throw new DaoException("Method not implemented");
 	}
 	@Transactional(readOnly = false)
 	public default void deleteUser(Integer userId) throws DaoException {
+		throw new DaoException("Method not implemented");
+	}
+	
+	@Transactional(readOnly = false)
+	public default void hardDeleteAllUsers() throws  DaoException {
 		throw new DaoException("Method not implemented");
 	}
 	

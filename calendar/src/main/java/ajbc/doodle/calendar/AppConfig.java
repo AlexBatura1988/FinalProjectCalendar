@@ -3,8 +3,9 @@ package ajbc.doodle.calendar;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-
-
+import ajbc.doodle.calendar.entities.Event;
+import ajbc.doodle.calendar.entities.Notification;
+import ajbc.doodle.calendar.entities.User;
 
 import java.util.Properties;
 
@@ -63,7 +64,7 @@ public class AppConfig {
 		LocalSessionFactoryBean factory = new LocalSessionFactoryBean();
 		factory.setDataSource(dataSource);
 		//to do add entities
-		factory.setAnnotatedClasses( );
+		factory.setAnnotatedClasses(User.class );
 		
 		Properties props = new Properties();
 		props.setProperty("hibernate.dialect", "org.hibernate.dialect.SQLServerDialect");
