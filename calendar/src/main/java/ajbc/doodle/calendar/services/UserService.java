@@ -25,8 +25,16 @@ public class UserService {
 		userDao.addUser(user);
 	}
 	
+	public User getUserById(Integer userId) throws DaoException {
+		return userDao.getUser(userId);
+	}
+	
 	public void deleteUser(Integer userId) throws DaoException {
 		userDao.deleteUser(userId);
+	}
+	
+	public void updateUser(User user) throws DaoException {
+		userDao.updateUser(user);
 	}
 	
 	public void hardDeleteAllUsers() throws DaoException {

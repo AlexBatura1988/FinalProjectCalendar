@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import ajbc.doodle.calendar.entities.User;
 
 @SuppressWarnings("unchecked")
-//@Component(value="htUsDao")
 @Repository("htUsDao")
 public class HibarnateTemplateUserDao implements UserDao {
 	

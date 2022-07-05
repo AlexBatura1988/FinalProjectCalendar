@@ -64,7 +64,7 @@ public class AppConfig {
 		LocalSessionFactoryBean factory = new LocalSessionFactoryBean();
 		factory.setDataSource(dataSource);
 		//to do add entities
-		factory.setAnnotatedClasses(User.class );
+		factory.setAnnotatedClasses(User.class,Event.class );
 		
 		Properties props = new Properties();
 		props.setProperty("hibernate.dialect", "org.hibernate.dialect.SQLServerDialect");
