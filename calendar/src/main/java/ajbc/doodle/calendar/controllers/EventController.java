@@ -1,5 +1,7 @@
 package ajbc.doodle.calendar.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ajbc.doodle.calendar.daos.DaoException;
 import ajbc.doodle.calendar.entities.ErrorMessage;
 import ajbc.doodle.calendar.entities.Event;
+import ajbc.doodle.calendar.entities.User;
 import ajbc.doodle.calendar.services.EventService;
 
 @RestController
@@ -32,6 +35,28 @@ public class EventController {
 			errorMessage.setMessage("failed to add event to db");
 			return ResponseEntity.status(HttpStatus.valueOf(500)).body(errorMessage);
 		}
+	}
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<List<Event>> getAllEventss() throws DaoException {
+		List<Event> events = eventService.getAllEvents();
+		if (events == null)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		return ResponseEntity.ok(events);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, path = "/id/{id}")
+	public ResponseEntity<?> getEventById(@PathVariable Integer id) throws DaoException {
+		try {
+			Event event = eventService.getEventbyId(id);
+			return ResponseEntity.ok(event);
+		} catch (DaoException e) {
+			ErrorMessage errorMsg = new ErrorMessage();
+			errorMsg.setData(e.getMessage());
+			errorMsg.setMessage(e.getMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMsg);
+		}
+
 	}
 	
 
