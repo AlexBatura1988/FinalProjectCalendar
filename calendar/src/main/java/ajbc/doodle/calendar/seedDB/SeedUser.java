@@ -11,6 +11,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import ajbc.doodle.calendar.daos.DaoException;
+import ajbc.doodle.calendar.daos.EventDao;
 import ajbc.doodle.calendar.entities.Event;
 import ajbc.doodle.calendar.entities.Notification;
 import ajbc.doodle.calendar.entities.User;
@@ -56,16 +57,19 @@ public class SeedUser {
 	public void seedEvents() throws DaoException {
 		List<User> users = userService.getAllUsers();
 		
-		eventService.addEvent(new Event(users.get(0).getEmailId(), "test", true, LocalDateTime.of(2022, 8, 7,6,0),
+		eventService.addEvent(new Event(users.get(1).getEmailId(), "test", true, LocalDateTime.of(2022, 8, 7,6,0),
 				LocalDateTime.of(2022, 9, 7,5,0),  "addres", "test description",
-				RepeatingOptions.DAILY, 0));
+				RepeatingOptions.DAILY, 0,users));
 		
 	}
 	
 	public void seedNotifications() throws DaoException {
-		List<Event> events = eventService.getAllEvents();
 		
-		notificationService.addNotification(new Notification(events.get(0).getEventId(), "testTitle", Unit.HOURS, 2, 0));
+		
+		User user = userService.getUserById(65);
+		Event event = eventService.getEventbyId(18);
+		
+		notificationService.addNotification(new Notification(user,event, "testTitle", Unit.HOURS, 2, 0));
 		
 	}
 	

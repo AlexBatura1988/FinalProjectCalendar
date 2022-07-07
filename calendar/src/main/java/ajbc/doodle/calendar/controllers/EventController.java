@@ -1,6 +1,9 @@
 package ajbc.doodle.calendar.controllers;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ajbc.doodle.calendar.daos.DaoException;
@@ -37,13 +41,27 @@ public class EventController {
 		}
 	}
 	
+//	@RequestMapping(method = RequestMethod.GET)
+//	public ResponseEntity<List<Event>> getAllEventss()() throws DaoException {
+//		List<Event> events = eventService.getAllEvents();
+//		if (events == null)
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//		return ResponseEntity.ok(events);
+//	}
+	
+	
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<Event>> getAllEventss() throws DaoException {
-		List<Event> events = eventService.getAllEvents();
+	public ResponseEntity<List<Event>> getAllEventss(@RequestParam Map<String, String> map) throws DaoException {
+		List<Event> events;
+			events = eventService.getAllEvents();
 		if (events == null)
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			return ResponseEntity.notFound().build();
+		
 		return ResponseEntity.ok(events);
 	}
+
+	
+	
 	
 	@RequestMapping(method = RequestMethod.GET, path = "/id/{id}")
 	public ResponseEntity<?> getEventById(@PathVariable Integer id) throws DaoException {
