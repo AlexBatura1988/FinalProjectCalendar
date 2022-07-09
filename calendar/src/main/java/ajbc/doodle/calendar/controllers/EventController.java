@@ -24,23 +24,22 @@ import ajbc.doodle.calendar.services.EventService;
 @RestController
 @RequestMapping("/events")
 public class EventController {
-	
+
 	@Autowired
 	private EventService eventService;
-	@RequestMapping(method = RequestMethod.POST, path = "/{id}")
-	public ResponseEntity<?> addEvent(@RequestBody Event event, @PathVariable Integer userId) {
+
+	@RequestMapping(method = RequestMethod.POST, path = "/user/{userId}")
+	public ResponseEntity<?> addEvent(@RequestBody Event event, @PathVariable Integer userId, @RequestParam(required = false) List<Integer> guestsIds) {
 		try {
-			eventService.addEvent( event);
-			event = eventService.getEventbyId(event.getEventId());
+			eventService.addEvent(event, userId, guestsIds);
 			return ResponseEntity.status(HttpStatus.CREATED).body(event);
-		} catch (DaoException e) {
-			ErrorMessage errorMessage = new ErrorMessage();
-			errorMessage.setData(e.getMessage());
-			errorMessage.setMessage("failed to add event to db");
-			return ResponseEntity.status(HttpStatus.valueOf(500)).body(errorMessage);
+		}catch (DaoException e) {
+				ErrorMessage errorMessage = new ErrorMessage();
+				errorMessage.setData(e.getMessage());
+				errorMessage.setMessage("failed to add event to db");
+				return ResponseEntity.status(HttpStatus.valueOf(500)).body(errorMessage);
+			}
 		}
-	}
-	
 //	@RequestMapping(method = RequestMethod.GET)
 //	public ResponseEntity<List<Event>> getAllEventss()() throws DaoException {
 //		List<Event> events = eventService.getAllEvents();
@@ -48,21 +47,17 @@ public class EventController {
 //			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 //		return ResponseEntity.ok(events);
 //	}
-	
-	
+
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<Event>> getAllEventss(@RequestParam Map<String, String> map) throws DaoException {
 		List<Event> events;
-			events = eventService.getAllEvents();
+		events = eventService.getAllEvents();
 		if (events == null)
 			return ResponseEntity.notFound().build();
-		
+
 		return ResponseEntity.ok(events);
 	}
 
-	
-	
-	
 	@RequestMapping(method = RequestMethod.GET, path = "/id/{id}")
 	public ResponseEntity<?> getEventById(@PathVariable Integer id) throws DaoException {
 		try {
@@ -76,6 +71,5 @@ public class EventController {
 		}
 
 	}
-	
 
 }

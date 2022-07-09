@@ -83,6 +83,14 @@ public class HibarnateTemplateUserDao implements UserDao {
 	    }
 	 
 	 @Override
+	    public List<User> getUsersByIds(List<Integer> ids) throws DaoException {
+	        DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
+	        criteria.add(Restrictions.in("id", ids));
+	        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+	        return (List<User>) template.findByCriteria(criteria);
+	    }
+	 
+	 @Override
 	    public List<User> getUsersByEventBetweenDates(LocalDateTime stateDate, LocalDateTime endDate) throws DaoException {
 	        DetachedCriteria criteria = DetachedCriteria.forClass(User.class).createCriteria("events");
 	        criteria.add(Restrictions.le("startDate", stateDate));

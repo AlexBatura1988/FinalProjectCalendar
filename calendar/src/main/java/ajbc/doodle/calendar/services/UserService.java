@@ -41,6 +41,9 @@ public class UserService {
 	 public List<User> getUsersByEventId(Integer eventId) throws DaoException {
 	        return userDao.getUsersByEventId(eventId);
 	    }
+	 public List<User> getUsersByIds(List<Integer> ids) throws DaoException {
+	        return userDao.getUsersByIds(ids);
+	    }
 	 
 	 public List<User> getUsersByEventBetweenDates(LocalDateTime stateTime, LocalDateTime endTime) throws DaoException {
 	        return userDao.getUsersByEventBetweenDates(stateTime, endTime);

@@ -28,6 +28,10 @@ public interface UserDao {
 	public default List<User> getUsersByEventId(Integer eventId) throws DaoException {
 		throw new DaoException("Method not implemented");
 	}
+	
+	 public default List<User> getUsersByIds(List<Integer> ids) throws DaoException {
+	        throw new DaoException("Method not implemented");
+	    }
 
 	public default List<User> getUsersByEventBetweenDates(LocalDateTime stateDate, LocalDateTime endDate)
 			throws DaoException {

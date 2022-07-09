@@ -21,58 +21,52 @@ import ajbc.doodle.calendar.services.EventService;
 import ajbc.doodle.calendar.services.NotificationService;
 import ajbc.doodle.calendar.services.UserService;
 
-
-
 @Component
 public class SeedUser {
-	
+
 	@Autowired
 	private UserService userService;
 	@Autowired
 	private EventService eventService;
 	@Autowired
 	private NotificationService notificationService;
-	
+
 	@EventListener
-	public void seedUserDB(ContextRefreshedEvent event) throws DaoException  {
-		
-			//seedUsers();
-			//seedEvents();
-		    seedNotifications();
-		
+	public void seedUserDB(ContextRefreshedEvent event) throws DaoException {
+
+		// seedUsers();
+		// seedEvents();
+		//seedNotifications();
+
 	}
-
-	
-
 
 	public void seedUsers() throws DaoException {
-		
-		//userService.hardDeleteAllUsers();
-		userService.createUser(new User("Alex","batura","gmail.com",LocalDate.of(1988, 1, 4),LocalDate.of(2020, 2, 3),0));
-		userService.createUser(new User("Arina","batura","gmail1.com",LocalDate.of(1990, 1, 4),LocalDate.of(2021, 2, 3),0));
-		userService.createUser(new User("marina","ttt","gmail2.com",LocalDate.of(1990, 1, 5),LocalDate.of(2021, 6, 3),0));
-			
+
+		// userService.hardDeleteAllUsers();
+		userService.createUser(
+				new User("Alex", "batura", "gmail.com", LocalDate.of(1988, 1, 4), LocalDate.of(2020, 2, 3), 0));
+		userService.createUser(
+				new User("Arina", "batura", "gmail1.com", LocalDate.of(1990, 1, 4), LocalDate.of(2021, 2, 3), 0));
+		userService.createUser(
+				new User("marina", "ttt", "gmail2.com", LocalDate.of(1990, 1, 5), LocalDate.of(2021, 6, 3), 0));
+
 	}
-	
+
 	public void seedEvents() throws DaoException {
 		List<User> users = userService.getAllUsers();
-		
-		eventService.addEvent(new Event(users.get(1).getUserId(), "test", true, LocalDateTime.of(2022, 8, 7,6,0),
-				LocalDateTime.of(2022, 9, 7,5,0),  "addres", "test description",
-				RepeatingOptions.DAILY, 0,users));
-		
+
+		eventService.addEvent(new Event(users.get(1), "test", true, LocalDateTime.of(2022, 8, 7, 6, 0),
+				LocalDateTime.of(2022, 9, 7, 5, 0), "addres", "test description", RepeatingOptions.DAILY, users));
+
 	}
-	
+
 	public void seedNotifications() throws DaoException {
-		
-		
+
 		User user = userService.getUser(73);
 		Event event = eventService.getEventbyId(19);
-		
-		notificationService.addNotification(new Notification(user,event, "testTitle", Unit.HOURS, 2, 0));
-		
+
+		notificationService.addNotification(new Notification(user, event, "testTitle", Unit.HOURS, 2, 0));
+
 	}
-	
-	
-	
+
 }

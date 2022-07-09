@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -28,18 +29,16 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Getter
-@Setter 
+@Setter
 @NoArgsConstructor
 @ToString
 @Entity
 @Table(name = "Events")
 public class Event {
-	
-	
-	public Event(Integer ownerId, String title, Boolean isAllDay, LocalDateTime startDate,
-			LocalDateTime endDate, String address, String description, RepeatingOptions repeatingOptions,
-			Integer disable,List<User> guests) {
-		this.ownerId = ownerId;
+
+	public Event(String title, Boolean isAllDay, LocalDateTime startDate, LocalDateTime endDate, String address,
+			String description, RepeatingOptions repeatingOptions, List<User> guests) {
+
 		this.title = title;
 		this.isAllDay = isAllDay;
 		this.startDate = startDate;
@@ -47,32 +46,42 @@ public class Event {
 		this.address = address;
 		this.description = description;
 		this.repeatingOptions = repeatingOptions;
-		this.disable = disable;
 		this.guests = guests;
+
 	}
-	
-	
+
+	public Event(User owner, String title, Boolean isAllDay, LocalDateTime startDate, LocalDateTime endDate,
+			String address, String description, RepeatingOptions repeatingOptions, List<User> guests) {
+		this(title, isAllDay, startDate, endDate, address, description, repeatingOptions, guests);
+		this.owner = owner;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer eventId;
-	private Integer ownerId;
-	private String title;
-	private boolean isAllDay;
-	private LocalDateTime startDate;
-	private LocalDateTime endDate;
-	private String address;
-	private String description;
-	@Enumerated(EnumType.STRING)
-	private RepeatingOptions repeatingOptions;
-	private Integer disable;
-	
-	
-	@JsonIgnore
-	@ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
-	@JoinTable(name = "usersEvents", joinColumns = @JoinColumn(name = "eventId"), inverseJoinColumns = @JoinColumn(name = "userId"))
-	private List<User> guests;
-	
-	
-	
+    private String title;
+    private boolean isAllDay;
+
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
+    private String address;
+    private String description;
+    @Enumerated(EnumType.STRING)
+    private RepeatingOptions repeatingOptions;
+    private Integer disable = 0;
+
+    @JsonIgnore
+    @Column(insertable = false, updatable = false)
+    private Integer ownerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ownerId")
+    private User owner;
+
+    @JsonIgnore
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(name = "usersEvents", joinColumns = @JoinColumn(name = "eventId"), inverseJoinColumns = @JoinColumn(name = "userId"))
+    private List<User> guests;
 
 }
