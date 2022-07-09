@@ -15,7 +15,7 @@ import ajbc.doodle.calendar.entities.Event;
 @SuppressWarnings("unchecked")
 @Repository("htEvDao")
 public class HibarnateTemplateEventDao implements EventDao {
-	
+
 	@Autowired
 	private HibernateTemplate template;
 
@@ -57,18 +57,24 @@ public class HibarnateTemplateEventDao implements EventDao {
 	}
 
 	@Override
+	public List<Event> getAllEventsByUserId(Integer userId) throws DaoException {
+		DetachedCriteria criteria = DetachedCriteria.forClass(Event.class).createCriteria("guests");
+		criteria.add(Restrictions.eq("id", userId));
+		return (List<Event>) template.findByCriteria(criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY));
+	}
+
+	@Override
 	public long count() throws DaoException {
 		DetachedCriteria criteria = DetachedCriteria.forClass(Event.class);
 		criteria.setProjection(Projections.rowCount());
-		return (long)template.findByCriteria(criteria).get(0);
+		return (long) template.findByCriteria(criteria).get(0);
 	}
 
 	@Override
 	public List<Event> getDiscontinuedEvents() throws DaoException {
 		DetachedCriteria criteria = DetachedCriteria.forClass(Event.class);
 		criteria.add(Restrictions.eq("discontinued", 1));
-		return (List<Event>)template.findByCriteria(criteria);
+		return (List<Event>) template.findByCriteria(criteria);
 	}
-	
 
 }

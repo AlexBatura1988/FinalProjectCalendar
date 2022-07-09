@@ -60,6 +60,10 @@ public class EventService {
 		return eventDao.getAllEvents();
 	}
 	
+	public List<Event> getAllEventsByUserId(Integer userId) throws DaoException {
+        return eventDao.getAllEventsByUserId(userId);
+    }
+	
 	
 	
 	
