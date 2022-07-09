@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,6 +24,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Notification entity class
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -31,46 +35,80 @@ import lombok.ToString;
 @Table(name = "notifications")
 public class Notification {
 
-
-	
+	/**
+	 * Notification id
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(updatable = false, nullable = false)
 	private Integer notificationId;
 	
-	@JsonIgnore
-	@ManyToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name="userId")
-	private User user;
 	
-	
-	@JsonIgnore
-	@ManyToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name="eventId")
-	private Event event;
-	
-	
-	private String title;
-	@Enumerated(EnumType.STRING)
-	private Unit unit;
-	private Integer timeBeforeEvent;
-	private Integer disable;
+	/**
+	 * * The owner id
+	 */
+	@Column(insertable = false, updatable = false)
+	private Integer ownerId;
 	
 	
 	
 	
 	
-	
-	public Notification( User user,Event event,String title, Unit unit, Integer timeBeforeEvent,Integer disable) {
-		this.user= user;
-		this.event = event;
-		this.title = title;
-		this.unit = unit;
-		this.timeBeforeEvent = timeBeforeEvent;
-		this.disable = disable;
-				
-	}
-	
-	
+
+	/**
+     * The owner of the event
+     */
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ownerId")
+    private User owner;
+
+    /**
+     * The event id
+     */
+    @Column(insertable = false, updatable = false)
+    private Integer eventId;
+
+    /**
+     * The event of the notification
+     */
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "eventId")
+    private Event event;
+
+    /**
+     * The title of the notification.
+     */
+    private String title = "Default Notification";
+
+    /**
+     * Unit time to notify before the event.
+     */
+    @Enumerated(EnumType.STRING)
+    private Unit unit = Unit.HOURS;
+
+    /**
+     * The amount of time to notify before the event.
+     */
+    private Integer timeBeforeEvent = 24;
+
+    /**
+     * If the notification deleted in soft delete
+     */
+    @JsonIgnore
+    private Integer disable = 0;
+
+    public Notification(User owner, Event event) {
+        this.owner = owner;
+        this.event = event;
+    }
+
+    public Notification(User user, Event event, String title, Unit unit, Integer timeBeforeEvent) {
+        this(user, event);
+        this.title = title;
+        this.unit = unit;
+        this.timeBeforeEvent = timeBeforeEvent;
+    }
 
 }

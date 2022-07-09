@@ -3,7 +3,9 @@ package ajbc.doodle.calendar.entities;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
@@ -18,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.JoinColumn;
 
@@ -59,6 +62,10 @@ public class Event {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ownerId")
 	private User owner;
+	
+	@JsonIgnore
+    @OneToMany(mappedBy = "event", cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+    private Set<Notification> notifications = new HashSet<>();
 
 	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.EAGER)

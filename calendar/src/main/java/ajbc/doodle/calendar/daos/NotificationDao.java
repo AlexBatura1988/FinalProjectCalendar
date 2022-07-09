@@ -7,10 +7,19 @@ import org.springframework.transaction.annotation.Transactional;
 import ajbc.doodle.calendar.entities.Event;
 import ajbc.doodle.calendar.entities.Notification;
 
+/**
+ * Notification DAO
+ */
 @Transactional(rollbackFor = { DaoException.class }, readOnly = true)
 public interface NotificationDao {
 	
 	// CRUD operations
+	
+	/**
+	 * 
+	 * @param notification - the notification to create
+	 *  Add notification to the DB
+	 */
 		@Transactional(readOnly = false)
 		public default void addNotification(Notification notification) throws DaoException {
 			throw new DaoException("Method not implemented");

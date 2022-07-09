@@ -12,6 +12,9 @@ import ajbc.doodle.calendar.entities.Event;
 import ajbc.doodle.calendar.entities.Notification;
 import ajbc.doodle.calendar.entities.User;
 
+/**
+ * Notification service
+ */
 @Service
 public class NotificationService {
 	
@@ -19,6 +22,10 @@ public class NotificationService {
 	@Qualifier("htNotDao")
 	private NotificationDao notificationDao;
 	
+	/**
+	 * Create notification
+	 * @param notification - the notification to create
+	 */
 	public void addNotification(Notification notification) throws DaoException {
 		notificationDao.addNotification(notification);
 	}

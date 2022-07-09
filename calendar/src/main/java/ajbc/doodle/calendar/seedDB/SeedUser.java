@@ -65,7 +65,7 @@ public class SeedUser {
 		User user = userService.getUser(73);
 		Event event = eventService.getEventById(19);
 
-		notificationService.addNotification(new Notification(user, event, "testTitle", Unit.HOURS, 2, 0));
+		notificationService.addNotification(new Notification(user, event, "testTitle", Unit.HOURS, 2));
 
 	}
 
