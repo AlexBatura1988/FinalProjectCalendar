@@ -1,5 +1,6 @@
 package ajbc.doodle.calendar.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -65,6 +66,10 @@ public class EventService {
     }
 	public List<Event> getUpcomingEventsByUserId(Integer userId) throws DaoException {
         return eventDao.getUpcomingEventsByUserId(userId);
+    }
+	
+	public List<Event> getBetweenEventsByUserId(Integer userId, LocalDateTime startTime, LocalDateTime endTime) throws DaoException {
+        return eventDao.getBetweenEventsByUserId(userId, startTime, endTime);
     }
 	
 	

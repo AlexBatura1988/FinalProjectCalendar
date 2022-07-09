@@ -1,11 +1,13 @@
 package ajbc.doodle.calendar.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,33 +29,45 @@ public class EventController {
 
 	@Autowired
 	private EventService eventService;
-	
-	 @RequestMapping(method = RequestMethod.GET)
-	    public ResponseEntity<?> getAllEvents() throws DaoException {
-	        List<Event> events = eventService.getAllEvents();
-	        if (events == null) {
-	            return ResponseEntity.notFound().build();
-	        }
-	        return ResponseEntity.ok(events);
-	    }
-	 
-	 @RequestMapping(method = RequestMethod.GET, path = "/user/{userId}")
-	    public ResponseEntity<?> getAllEventsByUserId(@PathVariable Integer userId) throws DaoException {
-	        List<Event> events = eventService.getAllEventsByUserId(userId);
-	        if (events == null) {
-	            return ResponseEntity.notFound().build();
-	        }
-	        return ResponseEntity.ok(events);
-	    }
-	 
-	 @RequestMapping(method = RequestMethod.GET, path = "/upcoming/user/{userId}")
-	    public ResponseEntity<?> getUpcomingEventsByUserId(@PathVariable Integer userId) throws DaoException {
-	        List<Event> events = eventService.getUpcomingEventsByUserId(userId);
-	        if (events == null) {
-	            return ResponseEntity.notFound().build();
-	        }
-	        return ResponseEntity.ok(events);
-	    }
+
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<?> getAllEvents() throws DaoException {
+		List<Event> events = eventService.getAllEvents();
+		if (events == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(events);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, path = "/user/{userId}")
+	public ResponseEntity<?> getAllEventsByUserId(@PathVariable Integer userId) throws DaoException {
+		List<Event> events = eventService.getAllEventsByUserId(userId);
+		if (events == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(events);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, path = "/upcoming/user/{userId}")
+	public ResponseEntity<?> getUpcomingEventsByUserId(@PathVariable Integer userId) throws DaoException {
+		List<Event> events = eventService.getUpcomingEventsByUserId(userId);
+		if (events == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(events);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, path = "/between/user/{userId}")
+	public ResponseEntity<?> getBetweenEventsByUserId(@PathVariable Integer userId,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime)
+			throws DaoException {
+		List<Event> events = eventService.getBetweenEventsByUserId(userId, startTime, endTime);
+		if (events == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(events);
+	}
 
 	@RequestMapping(method = RequestMethod.POST, path = "/user/{userId}")
 	public ResponseEntity<?> addEvent(@RequestBody Event event, @PathVariable Integer userId,
@@ -90,8 +104,6 @@ public class EventController {
 //			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 //		return ResponseEntity.ok(events);
 //	}
-
-	
 
 	@RequestMapping(method = RequestMethod.GET, path = "/id/{id}")
 	public ResponseEntity<?> getEventById(@PathVariable Integer id) throws DaoException {
