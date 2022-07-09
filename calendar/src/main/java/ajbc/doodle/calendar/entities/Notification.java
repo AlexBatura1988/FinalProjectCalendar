@@ -42,73 +42,75 @@ public class Notification {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(updatable = false, nullable = false)
 	private Integer notificationId;
-	
-	
+
 	/**
 	 * * The owner id
 	 */
+	@JsonIgnore
 	@Column(insertable = false, updatable = false)
 	private Integer ownerId;
-	
-	
-	
-	
-	
 
 	/**
-     * The owner of the event
-     */
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ownerId")
-    private User owner;
+	 * The owner of the event
+	 */
+	//@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ownerId")
+	private User owner;
 
-    /**
-     * The event id
-     */
-    @Column(insertable = false, updatable = false)
-    private Integer eventId;
+	/**
+	 * The event id
+	 */
+	@JsonIgnore
+	@Column(insertable = false, updatable = false)
+	private Integer eventId;
 
-    /**
-     * The event of the notification
-     */
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "eventId")
-    private Event event;
+	/**
+	 * The event of the notification
+	 */
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "eventId")
+	private Event event;
 
-    /**
-     * The title of the notification.
-     */
-    private String title = "Default Notification";
+	/**
+	 * The title of the notification.
+	 */
+	private String title = "Default Notification";
 
-    /**
-     * Unit time to notify before the event.
-     */
-    @Enumerated(EnumType.STRING)
-    private Unit unit = Unit.HOURS;
+	/**
+	 * Unit time to notify before the event.
+	 */
+	@Enumerated(EnumType.STRING)
+	private Unit unit = Unit.HOURS;
 
-    /**
-     * The amount of time to notify before the event.
-     */
-    private Integer timeBeforeEvent = 24;
+	/**
+	 * The amount of time to notify before the event.
+	 */
+	private Integer timeBeforeEvent = 24;
 
-    /**
-     * If the notification deleted in soft delete
-     */
-    @JsonIgnore
-    private Integer disable = 0;
+	/**
+	 * If the notification deleted in soft delete
+	 */
+	@JsonIgnore
+	private Integer disable = 0;
 
-    public Notification(User owner, Event event) {
-        this.owner = owner;
-        this.event = event;
-    }
-
-    public Notification(User user, Event event, String title, Unit unit, Integer timeBeforeEvent) {
-        this(user, event);
+	public Notification(User owner, Event event) {
+		this.owner = owner;
+		this.event = event;
+	}
+	
+	public Notification(String title, Unit unit, Integer timeBeforeEvent) {
         this.title = title;
         this.unit = unit;
         this.timeBeforeEvent = timeBeforeEvent;
     }
+
+	public Notification(User user, Event event, String title, Unit unit, Integer timeBeforeEvent) {
+		this(user, event);
+		this.title = title;
+		this.unit = unit;
+		this.timeBeforeEvent = timeBeforeEvent;
+	}
 
 }

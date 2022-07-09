@@ -17,6 +17,7 @@ import ajbc.doodle.calendar.entities.Notification;
 import ajbc.doodle.calendar.entities.User;
 import ajbc.doodle.calendar.enums.RepeatingOptions;
 import ajbc.doodle.calendar.enums.Unit;
+import ajbc.doodle.calendar.exceptions.NotAuthorizedException;
 import ajbc.doodle.calendar.services.EventService;
 import ajbc.doodle.calendar.services.NotificationService;
 import ajbc.doodle.calendar.services.UserService;
@@ -32,7 +33,7 @@ public class SeedUser {
 	private NotificationService notificationService;
 
 	@EventListener
-	public void seedUserDB(ContextRefreshedEvent event) throws DaoException {
+	public void seedUserDB(ContextRefreshedEvent event) throws DaoException, NotAuthorizedException {
 
 		// seedUsers();
 		// seedEvents();
@@ -52,7 +53,7 @@ public class SeedUser {
 
 	}
 
-	public void seedEvents() throws DaoException {
+	public void seedEvents() throws DaoException, NotAuthorizedException {
 		List<User> users = userService.getAllUsers();
 
 		eventService.addEvent(new Event(users.get(1), "test", true, LocalDateTime.of(2022, 8, 7, 6, 0),
@@ -60,10 +61,10 @@ public class SeedUser {
 
 	}
 
-	public void seedNotifications() throws DaoException {
+	public void seedNotifications() throws DaoException, NotAuthorizedException {
 
-		User user = userService.getUser(73);
-		Event event = eventService.getEventById(19);
+		User user = userService.getUser(75);
+		Event event = eventService.getEventById(22);
 
 		notificationService.addNotification(new Notification(user, event, "testTitle", Unit.HOURS, 2));
 

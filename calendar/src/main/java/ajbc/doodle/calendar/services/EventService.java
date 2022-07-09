@@ -15,6 +15,7 @@ import ajbc.doodle.calendar.daos.UserDao;
 import ajbc.doodle.calendar.entities.Event;
 import ajbc.doodle.calendar.entities.Notification;
 import ajbc.doodle.calendar.entities.User;
+import ajbc.doodle.calendar.exceptions.NotAuthorizedException;
 
 @Service
 public class EventService {
@@ -47,7 +48,7 @@ public class EventService {
 		eventDao.addEvent(event);
 	}
 	
-	public void addEvent(Event event) throws DaoException {
+	public void addEvent(Event event) throws DaoException, NotAuthorizedException {
 		eventDao.addEvent(event);
 		if(event.getNotifications().isEmpty()) {
             Notification notification = new Notification(event.getOwner(), event);

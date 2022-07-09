@@ -22,6 +22,7 @@ public class HibernateTemplateNotifDao implements NotificationDao {
 	public void addNotification(Notification notification) throws DaoException {
 		template.persist(notification);
 		
+		
 	}
 
 	@Override
