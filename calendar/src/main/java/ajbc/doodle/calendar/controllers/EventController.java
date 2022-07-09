@@ -134,13 +134,7 @@ public class EventController {
 		}
 	}
 
-//	@RequestMapping(method = RequestMethod.GET)
-//	public ResponseEntity<List<Event>> getAllEventss()() throws DaoException {
-//		List<Event> events = eventService.getAllEvents();
-//		if (events == null)
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//		return ResponseEntity.ok(events);
-//	}
+
 
 	@RequestMapping(method = RequestMethod.GET, path = "/id/{id}")
 	public ResponseEntity<?> getEventById(@PathVariable Integer id) throws DaoException {

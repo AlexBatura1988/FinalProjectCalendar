@@ -116,6 +116,20 @@ public class UserConrtoller {
 	        return ResponseEntity.ok(users);
 	    }
 	  
+	  @RequestMapping(method = RequestMethod.PUT, path = "/id/{userId}")
+	    public ResponseEntity<?> updateUser(@PathVariable Integer userId, @RequestBody User user) {
+	        try {
+	            user.setUserId(userId);
+	            userService.updateUser(user);
+	            return ResponseEntity.status(HttpStatus.OK).body(user);
+	        } catch (DaoException e) {
+	            ErrorMessage errorMsg = new ErrorMessage();
+	            errorMsg.setData(e.getMessage());
+	            errorMsg.setMessage(e.getMessage());
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMsg);
+	        }
+	    }
+	  
 	  
 	  
 	  @RequestMapping(method = RequestMethod.PUT)
@@ -125,7 +139,7 @@ public class UserConrtoller {
 	            for (User user : users) {
 	                if (user.getUserId() == null) {
 	                    ErrorMessage errorMessage = new ErrorMessage();
-	                    errorMessage.setMessage("every user object must contain emailId field");
+	                    errorMessage.setMessage("every user object must contain userId field");
 	                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
 	                }
 	            }
@@ -157,15 +171,6 @@ public class UserConrtoller {
 
 	
 
-//	@RequestMapping(method = RequestMethod.DELETE, path = "/id/{id}")
-//	public ResponseEntity<?> deleteUser(@PathVariable Integer id) throws DaoException {
-//		try {
-//			User user = userService.getUserById(id);
-//			userService.deleteUser(id);
-//			return ResponseEntity.ok(user);
-//		} catch (DaoException e) {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-//		}
-//	}
+
 
 }
