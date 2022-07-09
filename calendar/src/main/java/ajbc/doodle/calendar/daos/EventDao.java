@@ -33,6 +33,11 @@ public interface EventDao {
 //	}
 	
 	
+	public default List<Event> getEventsByIds(List<Integer> eventIds) throws DaoException {
+		throw new DaoException("Method not implemented");
+	}
+	
+	
 
 	// Queries
 	

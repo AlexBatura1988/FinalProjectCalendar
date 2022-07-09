@@ -146,9 +146,16 @@ public class EventController {
 
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, path = "/id/{eventId}")
-	public ResponseEntity<?> updateEvent(@PathVariable Integer eventId, @RequestBody Event event) {
+	@RequestMapping(method = RequestMethod.PUT, path = "/user/{ownerId}/eventId/{eventId}")
+	public ResponseEntity<?> updateEvent(@PathVariable Integer ownerId, @PathVariable Integer eventId,
+			@RequestBody Event event) {
 		try {
+
+			if (!event.getOwnerId().equals(ownerId)) {
+				ErrorMessage errorMessage = new ErrorMessage();
+				errorMessage.setMessage("The user must be the owner of the event");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+			}
 			event.setEventId(eventId);
 			eventService.updateEvent(event);
 			return ResponseEntity.status(HttpStatus.OK).body(event);
@@ -160,14 +167,20 @@ public class EventController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, path = "/multiple")
-	public ResponseEntity<?> updateEvent(@RequestBody List<Event> events) {
+	@RequestMapping(method = RequestMethod.PUT, path = "multiple/user/{ownerId}")
+	public ResponseEntity<?> updateEvent(@PathVariable Integer ownerId, @RequestBody List<Event> events) {
 		try {
 			// Validate that the users have the emailId field
 			for (Event event : events) {
 				if (event.getEventId() == null) {
 					ErrorMessage errorMessage = new ErrorMessage();
 					errorMessage.setMessage("every event object must contain an eventId field");
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+				}
+
+				if (!event.getOwnerId().equals(ownerId)) {
+					ErrorMessage errorMessage = new ErrorMessage();
+					errorMessage.setMessage("The user must be the owner of every event");
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
 				}
 			}
@@ -184,26 +197,45 @@ public class EventController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMsg);
 		}
 	}
-	
-	@RequestMapping(method = RequestMethod.DELETE, path = "/id/{eventId}")
-    public ResponseEntity<?> deleteUser(@PathVariable Integer eventId, @RequestParam(defaultValue = "true") Boolean soft) throws DaoException {
-        try {
-            eventService.deleteEvent(eventId, soft);
-            return ResponseEntity.ok("The Event deleted");
-        } catch (DaoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
 
-    @RequestMapping(method = RequestMethod.DELETE, path = "/multiple")
-    public ResponseEntity<?> deleteUser(@RequestParam List<Integer> eventIds, @RequestParam(defaultValue = "true") Boolean soft) throws DaoException {
-        try {
-            for (Integer eventId : eventIds) {
-                eventService.deleteEvent(eventId, soft);
-            }
-            return ResponseEntity.ok("The Events deleted");
-        } catch (DaoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
+	@RequestMapping(method = RequestMethod.DELETE, path = "/user/{ownerId}/id/{eventId}")
+	public ResponseEntity<?> deleteUser(@PathVariable Integer ownerId, @PathVariable Integer eventId,
+			@RequestParam(defaultValue = "true") Boolean soft) throws DaoException {
+		try {
+			Event event = eventService.getEventById(eventId);
+
+			if (!event.getOwnerId().equals(ownerId)) {
+				ErrorMessage errorMessage = new ErrorMessage();
+				errorMessage.setMessage("The user must be the owner of the event");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+			}
+
+			eventService.deleteEvent(event, soft);
+			return ResponseEntity.ok("The Event deleted");
+		} catch (DaoException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, path = "/multiple/user/{ownerId}")
+	public ResponseEntity<?> deleteUser(@PathVariable Integer ownerId, @RequestParam List<Integer> eventIds,
+			@RequestParam(defaultValue = "true") Boolean soft) throws DaoException {
+		try {
+			List<Event> events = eventService.getEventsByIds(eventIds);
+			for (Event event : events) {
+				if (!event.getOwnerId().equals(ownerId)) {
+					ErrorMessage errorMessage = new ErrorMessage();
+					errorMessage.setMessage("The user must be the owner of every event");
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+				}
+			}
+			for (Event event : events) {
+				eventService.deleteEvent(event, soft);
+
+			}
+			return ResponseEntity.ok("The Events deleted");
+		} catch (DaoException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+	}
 }

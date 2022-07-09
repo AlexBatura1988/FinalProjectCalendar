@@ -37,6 +37,13 @@ public class HibarnateTemplateEventDao implements EventDao {
 			throw new DaoException("No  event in the DB");
 		return event;
 	}
+	
+	@Override
+    public List<Event> getEventsByIds(List<Integer> eventIds) throws DaoException {
+        DetachedCriteria criteria = DetachedCriteria.forClass(Event.class);
+        criteria.add(Restrictions.eq("id", eventIds));
+        return (List<Event>) template.findByCriteria(criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY));
+    }
 
 //	@Override
 //	public void deleteEventById(Integer eventId) throws DaoException {

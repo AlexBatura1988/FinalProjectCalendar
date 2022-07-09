@@ -57,6 +57,10 @@ public class EventService {
 		return eventDao.getEventById(eventId);
 	}
 	
+	public List<Event> getEventsByIds(List<Integer> eventIds) throws DaoException {
+        return eventDao.getEventsByIds(eventIds);
+    }
+	
 	public List<Event> getAllEvents() throws DaoException{
 		return eventDao.getAllEvents();
 	}
@@ -88,11 +92,10 @@ public class EventService {
 	        eventDao.updateEvent(oldEvent);
 	    }
 	 
-	 public void deleteEvent(Integer eventId, Boolean soft) throws DaoException {
+	 public void deleteEvent(Event event, Boolean soft) throws DaoException {
 	        if (soft) {
-	            Event event = getEventById(eventId);
-	            event.setDisable(1);
-	            eventDao.updateEvent(event);
+	        	 event.setDisable(1);
+	        	 eventDao.updateEvent(event);
 	        } else {
 	            // TODO
 	        }
