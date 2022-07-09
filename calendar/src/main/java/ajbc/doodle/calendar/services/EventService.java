@@ -68,9 +68,19 @@ public class EventService {
         return eventDao.getUpcomingEventsByUserId(userId);
     }
 	
+	public List<Event> getUpcomingEventsByUserIdMinutesAndHours(Integer userId, Integer minutes, Integer hours) throws DaoException {
+        LocalDateTime startDate = LocalDateTime.now();
+        LocalDateTime endData = startDate.plusHours(hours).plusMinutes(minutes);
+        return eventDao.getBetweenEventsByUserId(userId, startDate, endData);
+    }
+	
 	public List<Event> getBetweenEventsByUserId(Integer userId, LocalDateTime startTime, LocalDateTime endTime) throws DaoException {
         return eventDao.getBetweenEventsByUserId(userId, startTime, endTime);
     }
+	
+	 public List<Event> getAllEventsEvents(LocalDateTime startTime, LocalDateTime endTime) throws DaoException {
+	        return eventDao.getAllEventsEvents(startTime, endTime);
+	    }
 	
 	
 	

@@ -56,18 +56,55 @@ public class EventController {
 		}
 		return ResponseEntity.ok(events);
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, path = "/upcoming_from/user/{userId}")
+    public ResponseEntity<?> getUpcomingEventsByUserIdMinutesAndHours(@PathVariable Integer userId, @RequestParam Integer minutes, @RequestParam Integer hours) throws DaoException {
+        List<Event> events = eventService.getUpcomingEventsByUserIdMinutesAndHours(userId, minutes, hours);
+        if (events == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(events);
+    }
+
+	
+	
 
 	@RequestMapping(method = RequestMethod.GET, path = "/between/user/{userId}")
 	public ResponseEntity<?> getBetweenEventsByUserId(@PathVariable Integer userId,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime)
 			throws DaoException {
+		
+		if (startTime.compareTo(endTime) > 0) {
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setMessage("startTime must be before endTime");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+        }
+
 		List<Event> events = eventService.getBetweenEventsByUserId(userId, startTime, endTime);
 		if (events == null) {
 			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.ok(events);
 	}
+	
+	 @RequestMapping(method = RequestMethod.GET, path = "/between")
+	    public ResponseEntity<?> getAllEventsEvents(
+	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime
+	    ) throws DaoException {
+	        if (startTime.compareTo(endTime) > 0) {
+	            ErrorMessage errorMessage = new ErrorMessage();
+	            errorMessage.setMessage("startTime must be before endTime");
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+	        }
+
+	        List<Event> events = eventService.getAllEventsEvents(startTime, endTime);
+	        if (events == null) {
+	            return ResponseEntity.notFound().build();
+	        }
+	        return ResponseEntity.ok(events);
+	    }
 
 	@RequestMapping(method = RequestMethod.POST, path = "/user/{userId}")
 	public ResponseEntity<?> addEvent(@RequestBody Event event, @PathVariable Integer userId,

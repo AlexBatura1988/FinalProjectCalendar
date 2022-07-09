@@ -84,6 +84,14 @@ public class HibarnateTemplateEventDao implements EventDao {
 
 	        return (List<Event>) template.findByCriteria(criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY));
 	    }
+	 @Override
+	    public List<Event> getAllEventsEvents(LocalDateTime startTime, LocalDateTime endTime) throws DaoException {
+	        DetachedCriteria criteria = DetachedCriteria.forClass(Event.class, "event");
+	        criteria.add(Restrictions.ge("startDate", startTime));
+	        criteria.add(Restrictions.le("startDate", endTime));
+
+	        return (List<Event>) template.findByCriteria(criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY));
+	    }
 
 	@Override
 	public long count() throws DaoException {
