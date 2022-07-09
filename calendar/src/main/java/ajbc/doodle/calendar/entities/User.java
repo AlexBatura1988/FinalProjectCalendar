@@ -33,8 +33,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "users")
 public class User {
-	
-	
+
 	public User(String firstName, String lastName, String email, LocalDate birthDate, LocalDate joinDate,
 			Integer disable) {
 		this.firstName = firstName;
@@ -45,8 +44,8 @@ public class User {
 		this.disable = disable;
 	}
 	
-
 	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer emailId;
@@ -56,12 +55,10 @@ public class User {
 	private LocalDate birthDate;
 	private LocalDate joinDate;
 	private Integer disable;
-	
+
 	@JsonIgnore
-	@ManyToMany(mappedBy="guests",cascade = {CascadeType.MERGE},fetch = FetchType.EAGER)
-	//List<Event> events;
+	@ManyToMany(mappedBy = "guests", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH }, fetch = FetchType.EAGER)
 	private Set<Event> events = new HashSet<>();
-	
-	
 
 }

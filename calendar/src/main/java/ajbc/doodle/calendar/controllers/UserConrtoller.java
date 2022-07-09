@@ -1,8 +1,10 @@
 package ajbc.doodle.calendar.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,18 +29,31 @@ public class UserConrtoller {
 	UserService userService;
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> addUser(@RequestBody User user) throws DaoException {
+	public ResponseEntity<?> createUser(@RequestBody User user) throws DaoException {
 		try {
-			userService.addUser(user);
+			userService.createUser(user);
 			return ResponseEntity.status(HttpStatus.CREATED).body(user);
 		} catch (DaoException e) {
 			ErrorMessage errorMessage = new ErrorMessage();
 			errorMessage.setData(e.getMessage());
 			errorMessage.setMessage("failed to add user to db");
-			return ResponseEntity.status(HttpStatus.valueOf(500)).body(errorMessage);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
 		}
 
 	}
+	
+	 @RequestMapping(method = RequestMethod.POST, path = "/multiple")
+	    public ResponseEntity<?> createUsers(@RequestBody List<User> users) throws DaoException {
+	        try {
+	            userService.createUsers(users);
+	            return ResponseEntity.status(HttpStatus.CREATED).body(users);
+	        } catch (DaoException e) {
+	            ErrorMessage errorMessage = new ErrorMessage();
+	            errorMessage.setData(e.getMessage());
+	            errorMessage.setMessage("failed to add users to db");
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+	        }
+	    }
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<User>> getAllUsers() throws DaoException {
@@ -47,11 +62,24 @@ public class UserConrtoller {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		return ResponseEntity.ok(users);
 	}
+	
+	 @RequestMapping(method = RequestMethod.GET, path = "/email/{email}")
+	    public ResponseEntity<?> getUserByEmail(@PathVariable String email) throws DaoException {
+	        try {
+	            User user = userService.getUser(email);
+	            return ResponseEntity.ok(user);
+	        } catch (DaoException e) {
+	            ErrorMessage errorMsg = new ErrorMessage();
+	            errorMsg.setData(e.getMessage());
+	            errorMsg.setMessage(e.getMessage());
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMsg);
+	        }
+	    }
 
 	@RequestMapping(method = RequestMethod.GET, path = "/id/{id}")
 	public ResponseEntity<?> getUserById(@PathVariable Integer id) throws DaoException {
 		try {
-			User user = userService.getUserById(id);
+			User user = userService.getUser(id);
 			return ResponseEntity.ok(user);
 		} catch (DaoException e) {
 			ErrorMessage errorMsg = new ErrorMessage();
@@ -61,31 +89,83 @@ public class UserConrtoller {
 		}
 
 	}
+	
+	 @RequestMapping(method = RequestMethod.GET, path = "/event/{eventId}")
+	    public ResponseEntity<List<User>> getUsersByEventId(@PathVariable Integer eventId) throws DaoException {
+	        List<User> users = userService.getUsersByEventId(eventId);
+	        if (users == null) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	        }
+	        return ResponseEntity.ok(users);
+	    }
+	 
+	  @RequestMapping(method = RequestMethod.GET, path = "/events")
+	    public ResponseEntity<?> getUsersByEventBetweenDates(
+	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime
+	    ) throws DaoException {
+	        if (startTime.compareTo(endTime) > 0) {
+	            ErrorMessage errorMessage = new ErrorMessage();
+	            errorMessage.setMessage("startTime must be before endTime");
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+	        }
+	        List<User> users = userService.getUsersByEventBetweenDates(startTime, endTime);
+	        if (users == null) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	        }
+	        return ResponseEntity.ok(users);
+	    }
+	  
+	  
+	  
+	  @RequestMapping(method = RequestMethod.PUT)
+	    public ResponseEntity<?> updateUsers(@RequestBody List<User> users) {
+	        try {
+	            // Validate that the users have the emailId field
+	            for (User user : users) {
+	                if (user.getEmailId() == null) {
+	                    ErrorMessage errorMessage = new ErrorMessage();
+	                    errorMessage.setMessage("every user object must contain emailId field");
+	                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+	                }
+	            }
 
-	@RequestMapping(method = RequestMethod.PUT, path = "/id/{id}")
-	public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable Integer id) {
-		try {
-			user.setEmailId(id);
-			userService.updateUser(user);
-			user = userService.getUserById(id);
-			return ResponseEntity.status(HttpStatus.OK).body(user);
-		} catch (DaoException e) {
-			ErrorMessage errorMsg = new ErrorMessage();
-			errorMsg.setData(e.getMessage());
-			errorMsg.setMessage(e.getMessage());
-			return ResponseEntity.status(HttpStatus.valueOf(500)).body(errorMsg);
-		}
-	}
+	            // Update the users
+	            for (User user : users) {
+	                userService.updateUser(user);
+	            }
+	            return ResponseEntity.status(HttpStatus.OK).body(users);
+	        } catch (DaoException e) {
+	            ErrorMessage errorMsg = new ErrorMessage();
+	            errorMsg.setData(e.getMessage());
+	            errorMsg.setMessage(e.getMessage());
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMsg);
+	        }
+	    }
+	  
+	  
+	  @RequestMapping(method = RequestMethod.DELETE, path = "/id/{id}")
+	    public ResponseEntity<?> deleteUser(@PathVariable Integer id, @RequestParam(defaultValue = "true") Boolean soft) throws DaoException {
+	        try {
+	            User user = userService.getUser(id);
+	            userService.deleteUser(id, soft);
+	            return ResponseEntity.ok("The User deleted");
+	        } catch (DaoException e) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	        }
+	    }
 
-	@RequestMapping(method = RequestMethod.DELETE, path = "/id/{id}")
-	public ResponseEntity<?> deleteUser(@PathVariable Integer id) throws DaoException {
-		try {
-			User user = userService.getUserById(id);
-			userService.deleteUser(id);
-			return ResponseEntity.ok(user);
-		} catch (DaoException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
-	}
+	
+
+//	@RequestMapping(method = RequestMethod.DELETE, path = "/id/{id}")
+//	public ResponseEntity<?> deleteUser(@PathVariable Integer id) throws DaoException {
+//		try {
+//			User user = userService.getUserById(id);
+//			userService.deleteUser(id);
+//			return ResponseEntity.ok(user);
+//		} catch (DaoException e) {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//		}
+//	}
 
 }

@@ -70,6 +70,7 @@ public class AppConfig {
 		props.setProperty("hibernate.dialect", "org.hibernate.dialect.SQLServerDialect");
 		props.setProperty("hibernate.show_sql", "false");
 		props.setProperty("hibernate.format_sql", "true");
+		props.setProperty("hibernate.hbm2ddl.auto", "update");
 		
 		factory.setHibernateProperties(props);
 		return factory;

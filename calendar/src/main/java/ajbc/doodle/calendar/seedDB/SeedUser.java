@@ -48,9 +48,9 @@ public class SeedUser {
 	public void seedUsers() throws DaoException {
 		
 		//userService.hardDeleteAllUsers();
-		userService.addUser(new User("Alex","batura","gmail.com",LocalDate.of(1988, 1, 4),LocalDate.of(2020, 2, 3),0));
-		userService.addUser(new User("Arina","batura","gmail1.com",LocalDate.of(1990, 1, 4),LocalDate.of(2021, 2, 3),0));
-		userService.addUser(new User("marina","ttt","gmail2.com",LocalDate.of(1990, 1, 5),LocalDate.of(2021, 6, 3),0));
+		userService.createUser(new User("Alex","batura","gmail.com",LocalDate.of(1988, 1, 4),LocalDate.of(2020, 2, 3),0));
+		userService.createUser(new User("Arina","batura","gmail1.com",LocalDate.of(1990, 1, 4),LocalDate.of(2021, 2, 3),0));
+		userService.createUser(new User("marina","ttt","gmail2.com",LocalDate.of(1990, 1, 5),LocalDate.of(2021, 6, 3),0));
 			
 	}
 	
@@ -66,7 +66,7 @@ public class SeedUser {
 	public void seedNotifications() throws DaoException {
 		
 		
-		User user = userService.getUserById(65);
+		User user = userService.getUser(65);
 		Event event = eventService.getEventbyId(18);
 		
 		notificationService.addNotification(new Notification(user,event, "testTitle", Unit.HOURS, 2, 0));
