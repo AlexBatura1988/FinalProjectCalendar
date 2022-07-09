@@ -27,8 +27,7 @@ public class HibarnateTemplateEventDao implements EventDao {
 
 	@Override
 	public void updateEvent(Event event) throws DaoException {
-		// TODO Auto-generated method stub
-		EventDao.super.updateEvent(event);
+		template.merge(event);
 	}
 
 	@Override

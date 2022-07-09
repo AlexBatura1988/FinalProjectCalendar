@@ -54,6 +54,7 @@ public class User {
 	private String email;
 	private LocalDate birthDate;
 	private LocalDate joinDate;
+	@JsonIgnore
 	private Integer disable;
 
 	@JsonIgnore

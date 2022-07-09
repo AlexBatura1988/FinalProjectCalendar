@@ -56,30 +56,28 @@ public class EventController {
 		}
 		return ResponseEntity.ok(events);
 	}
-	
-	@RequestMapping(method = RequestMethod.GET, path = "/upcoming_from/user/{userId}")
-    public ResponseEntity<?> getUpcomingEventsByUserIdMinutesAndHours(@PathVariable Integer userId, @RequestParam Integer minutes, @RequestParam Integer hours) throws DaoException {
-        List<Event> events = eventService.getUpcomingEventsByUserIdMinutesAndHours(userId, minutes, hours);
-        if (events == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(events);
-    }
 
-	
-	
+	@RequestMapping(method = RequestMethod.GET, path = "/upcoming_from/user/{userId}")
+	public ResponseEntity<?> getUpcomingEventsByUserIdMinutesAndHours(@PathVariable Integer userId,
+			@RequestParam Integer minutes, @RequestParam Integer hours) throws DaoException {
+		List<Event> events = eventService.getUpcomingEventsByUserIdMinutesAndHours(userId, minutes, hours);
+		if (events == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(events);
+	}
 
 	@RequestMapping(method = RequestMethod.GET, path = "/between/user/{userId}")
 	public ResponseEntity<?> getBetweenEventsByUserId(@PathVariable Integer userId,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime)
 			throws DaoException {
-		
+
 		if (startTime.compareTo(endTime) > 0) {
-            ErrorMessage errorMessage = new ErrorMessage();
-            errorMessage.setMessage("startTime must be before endTime");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
-        }
+			ErrorMessage errorMessage = new ErrorMessage();
+			errorMessage.setMessage("startTime must be before endTime");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+		}
 
 		List<Event> events = eventService.getBetweenEventsByUserId(userId, startTime, endTime);
 		if (events == null) {
@@ -87,24 +85,24 @@ public class EventController {
 		}
 		return ResponseEntity.ok(events);
 	}
-	
-	 @RequestMapping(method = RequestMethod.GET, path = "/between")
-	    public ResponseEntity<?> getAllEventsEvents(
-	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
-	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime
-	    ) throws DaoException {
-	        if (startTime.compareTo(endTime) > 0) {
-	            ErrorMessage errorMessage = new ErrorMessage();
-	            errorMessage.setMessage("startTime must be before endTime");
-	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
-	        }
 
-	        List<Event> events = eventService.getAllEventsEvents(startTime, endTime);
-	        if (events == null) {
-	            return ResponseEntity.notFound().build();
-	        }
-	        return ResponseEntity.ok(events);
-	    }
+	@RequestMapping(method = RequestMethod.GET, path = "/between")
+	public ResponseEntity<?> getAllEventsEvents(
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime)
+			throws DaoException {
+		if (startTime.compareTo(endTime) > 0) {
+			ErrorMessage errorMessage = new ErrorMessage();
+			errorMessage.setMessage("startTime must be before endTime");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+		}
+
+		List<Event> events = eventService.getAllEventsEvents(startTime, endTime);
+		if (events == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(events);
+	}
 
 	@RequestMapping(method = RequestMethod.POST, path = "/user/{userId}")
 	public ResponseEntity<?> addEvent(@RequestBody Event event, @PathVariable Integer userId,
@@ -134,12 +132,10 @@ public class EventController {
 		}
 	}
 
-
-
 	@RequestMapping(method = RequestMethod.GET, path = "/id/{id}")
 	public ResponseEntity<?> getEventById(@PathVariable Integer id) throws DaoException {
 		try {
-			Event event = eventService.getEventbyId(id);
+			Event event = eventService.getEventById(id);
 			return ResponseEntity.ok(event);
 		} catch (DaoException e) {
 			ErrorMessage errorMsg = new ErrorMessage();
@@ -150,4 +146,42 @@ public class EventController {
 
 	}
 
+	@RequestMapping(method = RequestMethod.PUT, path = "/id/{eventId}")
+	public ResponseEntity<?> updateEvent(@PathVariable Integer eventId, @RequestBody Event event) {
+		try {
+			event.setEventId(eventId);
+			eventService.updateEvent(event);
+			return ResponseEntity.status(HttpStatus.OK).body(event);
+		} catch (DaoException e) {
+			ErrorMessage errorMsg = new ErrorMessage();
+			errorMsg.setData(e.getMessage());
+			errorMsg.setMessage("failed to update the event");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMsg);
+		}
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, path = "/multiple")
+	public ResponseEntity<?> updateEvent(@RequestBody List<Event> events) {
+		try {
+			// Validate that the users have the emailId field
+			for (Event event : events) {
+				if (event.getEventId() == null) {
+					ErrorMessage errorMessage = new ErrorMessage();
+					errorMessage.setMessage("every event object must contain an eventId field");
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+				}
+			}
+
+			// Update the events
+			for (Event event : events) {
+				eventService.updateEvent(event);
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(events);
+		} catch (DaoException e) {
+			ErrorMessage errorMsg = new ErrorMessage();
+			errorMsg.setData(e.getMessage());
+			errorMsg.setMessage("failed to update the events");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMsg);
+		}
+	}
 }

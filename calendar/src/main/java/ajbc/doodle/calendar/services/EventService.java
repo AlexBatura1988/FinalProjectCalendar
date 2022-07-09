@@ -53,7 +53,7 @@ public class EventService {
 		}
 	}
 	
-	public Event getEventbyId(Integer eventId) throws DaoException {
+	public Event getEventById(Integer eventId) throws DaoException {
 		return eventDao.getEventById(eventId);
 	}
 	
@@ -80,6 +80,12 @@ public class EventService {
 	
 	 public List<Event> getAllEventsEvents(LocalDateTime startTime, LocalDateTime endTime) throws DaoException {
 	        return eventDao.getAllEventsEvents(startTime, endTime);
+	    }
+	 
+	 public void updateEvent(Event event) throws DaoException {
+	        Event oldEvent = this.getEventById(event.getEventId());
+	        oldEvent.merge(event);
+	        eventDao.updateEvent(oldEvent);
 	    }
 	
 	

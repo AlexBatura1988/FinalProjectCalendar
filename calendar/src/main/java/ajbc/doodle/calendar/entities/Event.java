@@ -36,37 +36,34 @@ import lombok.ToString;
 @Entity
 @Table(name = "Events")
 public class Event {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer eventId;
-    private String title;
-    private boolean isAllDay;
+	private String title;
+	private boolean isAllDay;
 
-    private LocalDateTime startDate;
+	private LocalDateTime startDate;
 
-    private LocalDateTime endDate;
-    private String address;
-    private String description;
-    @Enumerated(EnumType.STRING)
-    private RepeatingOptions repeatingOptions;
-    private Integer disable = 0;
+	private LocalDateTime endDate;
+	private String address;
+	private String description;
+	@Enumerated(EnumType.STRING)
+	private RepeatingOptions repeatingOptions;
+	private Integer disable = 0;
 
-   
-    @Column(insertable = false, updatable = false)
-    private Integer ownerId;
-    
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ownerId")
-    private User owner;
+	@Column(insertable = false, updatable = false)
+	private Integer ownerId;
 
-    @JsonIgnore
-    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @JoinTable(name = "usersEvents", joinColumns = @JoinColumn(name = "eventId"), inverseJoinColumns = @JoinColumn(name = "userId"))
-    private List<User> guests;
-    
-    
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ownerId")
+	private User owner;
+
+	@JsonIgnore
+	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.EAGER)
+	@JoinTable(name = "usersEvents", joinColumns = @JoinColumn(name = "eventId"), inverseJoinColumns = @JoinColumn(name = "userId"))
+	private List<User> guests;
 
 	public Event(String title, Boolean isAllDay, LocalDateTime startDate, LocalDateTime endDate, String address,
 			String description, RepeatingOptions repeatingOptions, List<User> guests) {
@@ -87,10 +84,39 @@ public class Event {
 		this(title, isAllDay, startDate, endDate, address, description, repeatingOptions, guests);
 		this.owner = owner;
 	}
+
+	public Event(Integer eventId, String title, Boolean isAllDay, LocalDateTime startDate, LocalDateTime endDate,
+			String address, String description, RepeatingOptions repeatingOptions, List<User> guests) {
+		this(title, isAllDay, startDate, endDate, address, description, repeatingOptions, guests);
+		this.eventId = eventId;
+	}
+
 	public void addGuests(List<User> guests) {
 		this.setGuests(Stream.concat(this.getGuests().stream(), guests.stream()).toList());
 	}
-
 	
+	public void merge(Event event) {
+        if (!this.title.equals(event.title)) {
+            this.title = event.title;
+        }
+        if (this.isAllDay != event.isAllDay) {
+            this.isAllDay = event.isAllDay;
+        }
+        if (!this.startDate.equals(event.startDate)) {
+            this.startDate = event.startDate;
+        }
+        if (!this.endDate.equals(event.endDate)) {
+            this.endDate = event.endDate;
+        }
+        if (!this.address.equals(event.address)) {
+            this.address = event.address;
+        }
+        if (!this.description.equals(event.description)) {
+            this.description = event.description;
+        }
+        if (!this.repeatingOptions.equals(event.repeatingOptions)) {
+            this.repeatingOptions = event.repeatingOptions;
+        }
+    }
 
 }
