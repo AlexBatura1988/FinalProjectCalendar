@@ -45,6 +45,15 @@ public class EventController {
 	        }
 	        return ResponseEntity.ok(events);
 	    }
+	 
+	 @RequestMapping(method = RequestMethod.GET, path = "/upcoming/user/{userId}")
+	    public ResponseEntity<?> getUpcomingEventsByUserId(@PathVariable Integer userId) throws DaoException {
+	        List<Event> events = eventService.getUpcomingEventsByUserId(userId);
+	        if (events == null) {
+	            return ResponseEntity.notFound().build();
+	        }
+	        return ResponseEntity.ok(events);
+	    }
 
 	@RequestMapping(method = RequestMethod.POST, path = "/user/{userId}")
 	public ResponseEntity<?> addEvent(@RequestBody Event event, @PathVariable Integer userId,

@@ -42,6 +42,11 @@ public interface EventDao {
 		throw new DaoException("Method not implemented");
 	}
 	
+	public default List<Event> getUpcomingEventsByUserId(Integer userId) throws DaoException {
+		throw new DaoException("Method not implemented");
+	}
+	
+	
 	public default long count() throws DaoException {
 		throw new DaoException("Method not implemented");
 	}

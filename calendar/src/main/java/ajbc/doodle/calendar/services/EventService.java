@@ -63,6 +63,9 @@ public class EventService {
 	public List<Event> getAllEventsByUserId(Integer userId) throws DaoException {
         return eventDao.getAllEventsByUserId(userId);
     }
+	public List<Event> getUpcomingEventsByUserId(Integer userId) throws DaoException {
+        return eventDao.getUpcomingEventsByUserId(userId);
+    }
 	
 	
 	
