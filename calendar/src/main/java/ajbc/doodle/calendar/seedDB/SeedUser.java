@@ -38,7 +38,7 @@ public class SeedUser {
 		
 			//seedUsers();
 			//seedEvents();
-		    //seedNotifications();
+		    seedNotifications();
 		
 	}
 
@@ -57,7 +57,7 @@ public class SeedUser {
 	public void seedEvents() throws DaoException {
 		List<User> users = userService.getAllUsers();
 		
-		eventService.addEvent(new Event(users.get(1).getEmailId(), "test", true, LocalDateTime.of(2022, 8, 7,6,0),
+		eventService.addEvent(new Event(users.get(1).getUserId(), "test", true, LocalDateTime.of(2022, 8, 7,6,0),
 				LocalDateTime.of(2022, 9, 7,5,0),  "addres", "test description",
 				RepeatingOptions.DAILY, 0,users));
 		
@@ -66,8 +66,8 @@ public class SeedUser {
 	public void seedNotifications() throws DaoException {
 		
 		
-		User user = userService.getUser(65);
-		Event event = eventService.getEventbyId(18);
+		User user = userService.getUser(73);
+		Event event = eventService.getEventbyId(19);
 		
 		notificationService.addNotification(new Notification(user,event, "testTitle", Unit.HOURS, 2, 0));
 		

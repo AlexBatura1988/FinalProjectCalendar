@@ -50,6 +50,9 @@ public class UserService {
 	        if (soft) {
 	            userDao.softDeleteUser(userId);
 	        } else {
+	        	User user = getUser(userId);
+	        	//user.removeAllEvents();
+	            //this.updateUser(user);
 	            userDao.hardDeleteUser(userId);
 	        }
 	    }

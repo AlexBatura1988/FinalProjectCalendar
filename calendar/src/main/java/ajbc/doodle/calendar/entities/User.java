@@ -48,7 +48,7 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer emailId;
+	private Integer userId;
 	private String firstName;
 	private String lastName;
 	private String email;
@@ -57,8 +57,18 @@ public class User {
 	private Integer disable;
 
 	@JsonIgnore
-	@ManyToMany(mappedBy = "guests", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-			CascadeType.REFRESH }, fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "guests", cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
 	private Set<Event> events = new HashSet<>();
+	
+	public void removeAllEvents() {
+        for(Event event : this.getEvents()) {
+            this.removeEvent(event);
+        }
+    }
+
+    private void removeEvent(Event event) {
+        this.getEvents().remove(event);
+        event.getGuests().remove(this);
+    }
 
 }

@@ -123,7 +123,7 @@ public class UserConrtoller {
 	        try {
 	            // Validate that the users have the emailId field
 	            for (User user : users) {
-	                if (user.getEmailId() == null) {
+	                if (user.getUserId() == null) {
 	                    ErrorMessage errorMessage = new ErrorMessage();
 	                    errorMessage.setMessage("every user object must contain emailId field");
 	                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
