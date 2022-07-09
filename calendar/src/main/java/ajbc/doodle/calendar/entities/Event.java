@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -35,27 +36,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "Events")
 public class Event {
-
-	public Event(String title, Boolean isAllDay, LocalDateTime startDate, LocalDateTime endDate, String address,
-			String description, RepeatingOptions repeatingOptions, List<User> guests) {
-
-		this.title = title;
-		this.isAllDay = isAllDay;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.address = address;
-		this.description = description;
-		this.repeatingOptions = repeatingOptions;
-		this.guests = guests;
-
-	}
-
-	public Event(User owner, String title, Boolean isAllDay, LocalDateTime startDate, LocalDateTime endDate,
-			String address, String description, RepeatingOptions repeatingOptions, List<User> guests) {
-		this(title, isAllDay, startDate, endDate, address, description, repeatingOptions, guests);
-		this.owner = owner;
-	}
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer eventId;
@@ -83,5 +64,32 @@ public class Event {
     @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(name = "usersEvents", joinColumns = @JoinColumn(name = "eventId"), inverseJoinColumns = @JoinColumn(name = "userId"))
     private List<User> guests;
+    
+    
+
+	public Event(String title, Boolean isAllDay, LocalDateTime startDate, LocalDateTime endDate, String address,
+			String description, RepeatingOptions repeatingOptions, List<User> guests) {
+
+		this.title = title;
+		this.isAllDay = isAllDay;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.address = address;
+		this.description = description;
+		this.repeatingOptions = repeatingOptions;
+		this.guests = guests;
+
+	}
+
+	public Event(User owner, String title, Boolean isAllDay, LocalDateTime startDate, LocalDateTime endDate,
+			String address, String description, RepeatingOptions repeatingOptions, List<User> guests) {
+		this(title, isAllDay, startDate, endDate, address, description, repeatingOptions, guests);
+		this.owner = owner;
+	}
+	public void addGuests(List<User> guests) {
+		this.setGuests(Stream.concat(this.getGuests().stream(), guests.stream()).toList());
+	}
+
+	
 
 }

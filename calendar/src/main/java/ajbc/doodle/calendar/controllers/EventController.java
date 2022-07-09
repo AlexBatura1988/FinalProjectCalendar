@@ -29,17 +29,33 @@ public class EventController {
 	private EventService eventService;
 
 	@RequestMapping(method = RequestMethod.POST, path = "/user/{userId}")
-	public ResponseEntity<?> addEvent(@RequestBody Event event, @PathVariable Integer userId, @RequestParam(required = false) List<Integer> guestsIds) {
+	public ResponseEntity<?> addEvent(@RequestBody Event event, @PathVariable Integer userId,
+			@RequestParam(required = false) List<Integer> guestsIds) {
 		try {
 			eventService.addEvent(event, userId, guestsIds);
 			return ResponseEntity.status(HttpStatus.CREATED).body(event);
-		}catch (DaoException e) {
-				ErrorMessage errorMessage = new ErrorMessage();
-				errorMessage.setData(e.getMessage());
-				errorMessage.setMessage("failed to add event to db");
-				return ResponseEntity.status(HttpStatus.valueOf(500)).body(errorMessage);
-			}
+		} catch (DaoException e) {
+			ErrorMessage errorMessage = new ErrorMessage();
+			errorMessage.setData(e.getMessage());
+			errorMessage.setMessage("failed to add event to db");
+			return ResponseEntity.status(HttpStatus.valueOf(500)).body(errorMessage);
 		}
+	}
+
+	@RequestMapping(method = RequestMethod.POST, path = "/multiple/user/{userId}")
+	public ResponseEntity<?> addMultipleEvents(@RequestBody List<Event> events, @PathVariable Integer userId,
+			@RequestParam(required = false) List<Integer> guestsIds) {
+		try {
+			eventService.addEvents(events, userId, guestsIds);
+			return ResponseEntity.status(HttpStatus.CREATED).body(events);
+		} catch (DaoException e) {
+			ErrorMessage errorMessage = new ErrorMessage();
+			errorMessage.setData(e.getMessage());
+			errorMessage.setMessage("failed to add event to db");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+		}
+	}
+
 //	@RequestMapping(method = RequestMethod.GET)
 //	public ResponseEntity<List<Event>> getAllEventss()() throws DaoException {
 //		List<Event> events = eventService.getAllEvents();

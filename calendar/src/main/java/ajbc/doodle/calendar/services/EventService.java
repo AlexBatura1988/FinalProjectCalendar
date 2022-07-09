@@ -33,15 +33,23 @@ public class EventService {
 	public void addEvent(Event event, Integer userId, List<Integer> guestsIds) throws DaoException {
 		User owner = userService.getUser(userId);
 		event.setOwner(owner);
+		event.setGuests(List.of(owner));
 		if (guestsIds != null) {
 			List<User> guests = userService.getUsersByIds(guestsIds);
-			event.setGuests(guests);
+			//event.setGuests(guests);
+			 event.addGuests(guests);
 		}
 		eventDao.addEvent(event);
 	}
 	
 	public void addEvent(Event event) throws DaoException {
 		eventDao.addEvent(event);
+	}
+	
+	public void addEvents(List<Event> events, Integer userId, List<Integer> guestsIds) throws DaoException {
+		for (Event event : events) {
+			this.addEvent(event, userId, guestsIds);
+		}
 	}
 	
 	public Event getEventbyId(Integer eventId) throws DaoException {
