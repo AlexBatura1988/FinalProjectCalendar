@@ -38,17 +38,17 @@ public class HibarnateTemplateEventDao implements EventDao {
 		return event;
 	}
 
-	@Override
-	public void deleteEventById(Integer eventId) throws DaoException {
-		// TODO Auto-generated method stub
-		EventDao.super.deleteEventById(eventId);
-	}
-
-	@Override
-	public void hardDeleteAllEvents() throws DaoException {
-		// TODO Auto-generated method stub
-		EventDao.super.hardDeleteAllEvents();
-	}
+//	@Override
+//	public void deleteEventById(Integer eventId) throws DaoException {
+//		// TODO Auto-generated method stub
+//		EventDao.super.deleteEventById(eventId);
+//	}
+//
+//	@Override
+//	public void hardDeleteAllEvents() throws DaoException {
+//		// TODO Auto-generated method stub
+//		EventDao.super.hardDeleteAllEvents();
+//	}
 
 	@Override
 	public List<Event> getAllEvents() throws DaoException {
@@ -99,11 +99,11 @@ public class HibarnateTemplateEventDao implements EventDao {
 		return (long) template.findByCriteria(criteria).get(0);
 	}
 
-	@Override
-	public List<Event> getDiscontinuedEvents() throws DaoException {
-		DetachedCriteria criteria = DetachedCriteria.forClass(Event.class);
-		criteria.add(Restrictions.eq("discontinued", 1));
-		return (List<Event>) template.findByCriteria(criteria);
-	}
+//	@Override
+//	public List<Event> getDiscontinuedEvents() throws DaoException {
+//		DetachedCriteria criteria = DetachedCriteria.forClass(Event.class);
+//		criteria.add(Restrictions.eq("discontinued", 1));
+//		return (List<Event>) template.findByCriteria(criteria);
+//	}
 
 }

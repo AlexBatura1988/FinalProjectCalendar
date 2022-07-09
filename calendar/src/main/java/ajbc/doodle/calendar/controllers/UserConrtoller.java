@@ -161,7 +161,7 @@ public class UserConrtoller {
 	  @RequestMapping(method = RequestMethod.DELETE, path = "/id/{id}")
 	    public ResponseEntity<?> deleteUser(@PathVariable Integer id, @RequestParam(defaultValue = "true") Boolean soft) throws DaoException {
 	        try {
-	            User user = userService.getUser(id);
+	           
 	            userService.deleteUser(id, soft);
 	            return ResponseEntity.ok("The User deleted");
 	        } catch (DaoException e) {

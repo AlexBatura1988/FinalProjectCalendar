@@ -51,11 +51,13 @@ public class UserService {
 	 
 	 public void deleteUser(Integer userId, Boolean soft) throws DaoException {
 	        if (soft) {
-	            userDao.softDeleteUser(userId);
+	        	User user = getUser(userId);
+	            user.setDisable(1);
+	            updateUser(user);
 	        } else {
 	        	User user = getUser(userId);
-	        	//user.removeAllEvents();
-	            //this.updateUser(user);
+//	            user.removeAllEvents();
+//	            this.updateUser(user);
 	            userDao.hardDeleteUser(userId);
 	        }
 	    }

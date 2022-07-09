@@ -43,10 +43,10 @@ public interface UserDao {
 		throw new DaoException("Method not implemented");
 	}
 
-	@Transactional(readOnly = false)
-	public default void softDeleteUser(Integer userId) throws DaoException {
-		throw new DaoException("Method not implemented");
-	}
+//	@Transactional(readOnly = false)
+//	public default void softDeleteUser(Integer userId) throws DaoException {
+//		throw new DaoException("Method not implemented");
+//	}
 
 	@Transactional(readOnly = false)
 	public default void hardDeleteUser(Integer userId) throws DaoException {

@@ -184,4 +184,26 @@ public class EventController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMsg);
 		}
 	}
+	
+	@RequestMapping(method = RequestMethod.DELETE, path = "/id/{eventId}")
+    public ResponseEntity<?> deleteUser(@PathVariable Integer eventId, @RequestParam(defaultValue = "true") Boolean soft) throws DaoException {
+        try {
+            eventService.deleteEvent(eventId, soft);
+            return ResponseEntity.ok("The Event deleted");
+        } catch (DaoException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, path = "/multiple")
+    public ResponseEntity<?> deleteUser(@RequestParam List<Integer> eventIds, @RequestParam(defaultValue = "true") Boolean soft) throws DaoException {
+        try {
+            for (Integer eventId : eventIds) {
+                eventService.deleteEvent(eventId, soft);
+            }
+            return ResponseEntity.ok("The Events deleted");
+        } catch (DaoException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }

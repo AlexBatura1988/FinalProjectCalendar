@@ -22,15 +22,15 @@ public interface EventDao {
 		throw new DaoException("Method not implemented");
 	}
 
-	@Transactional(readOnly = false)
-	public default void deleteEventById(Integer eventId) throws DaoException {
-		throw new DaoException("Method not implemented");
-	}
-	
-	@Transactional(readOnly = false)
-	public default void hardDeleteAllEvents() throws  DaoException {
-		throw new DaoException("Method not implemented");
-	}
+//	@Transactional(readOnly = false)
+//	public default void deleteEventById(Integer eventId) throws DaoException {
+//		throw new DaoException("Method not implemented");
+//	}
+//	
+//	@Transactional(readOnly = false)
+//	public default void hardDeleteAllEvents() throws  DaoException {
+//		throw new DaoException("Method not implemented");
+//	}
 	
 	
 
@@ -61,9 +61,9 @@ public interface EventDao {
 		throw new DaoException("Method not implemented");
 	}
 	
-	public default List<Event> getDiscontinuedEvents() throws DaoException {
-		throw new DaoException("Method not implemented");
-	}
+//	public default List<Event> getDiscontinuedEvents() throws DaoException {
+//		throw new DaoException("Method not implemented");
+//	}
 
 	public default List<Event> getAllEventsByUserId(Integer userId) throws DaoException{
 		throw new DaoException("Method not implemented");

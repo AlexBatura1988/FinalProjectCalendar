@@ -56,12 +56,12 @@ public class HibarnateTemplateUserDao implements UserDao {
 		template.merge(user);
 	}
 	
-	 @Override
-	    public void softDeleteUser(Integer userId) throws DaoException {
-	        User user = getUser(userId);
-	        user.setDisable(1);
-	        updateUser(user);
-	    }
+//	 @Override
+//	    public void softDeleteUser(Integer userId) throws DaoException {
+//	        User user = getUser(userId);
+//	        user.setDisable(1);
+//	        updateUser(user);
+//	    }
 	 
 	 @Override
 	    public void hardDeleteUser(Integer userId) throws DaoException {

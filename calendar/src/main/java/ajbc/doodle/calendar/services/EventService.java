@@ -87,6 +87,16 @@ public class EventService {
 	        oldEvent.merge(event);
 	        eventDao.updateEvent(oldEvent);
 	    }
+	 
+	 public void deleteEvent(Integer eventId, Boolean soft) throws DaoException {
+	        if (soft) {
+	            Event event = getEventById(eventId);
+	            event.setDisable(1);
+	            eventDao.updateEvent(event);
+	        } else {
+	            // TODO
+	        }
+	    }
 	
 	
 	
