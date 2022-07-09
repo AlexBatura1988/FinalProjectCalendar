@@ -27,6 +27,15 @@ public class EventController {
 
 	@Autowired
 	private EventService eventService;
+	
+	 @RequestMapping(method = RequestMethod.GET)
+	    public ResponseEntity<?> getAllEvents() throws DaoException {
+	        List<Event> events = eventService.getAllEvents();
+	        if (events == null) {
+	            return ResponseEntity.notFound().build();
+	        }
+	        return ResponseEntity.ok(events);
+	    }
 
 	@RequestMapping(method = RequestMethod.POST, path = "/user/{userId}")
 	public ResponseEntity<?> addEvent(@RequestBody Event event, @PathVariable Integer userId,
@@ -64,15 +73,7 @@ public class EventController {
 //		return ResponseEntity.ok(events);
 //	}
 
-	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<Event>> getAllEventss(@RequestParam Map<String, String> map) throws DaoException {
-		List<Event> events;
-		events = eventService.getAllEvents();
-		if (events == null)
-			return ResponseEntity.notFound().build();
-
-		return ResponseEntity.ok(events);
-	}
+	
 
 	@RequestMapping(method = RequestMethod.GET, path = "/id/{id}")
 	public ResponseEntity<?> getEventById(@PathVariable Integer id) throws DaoException {

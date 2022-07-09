@@ -52,10 +52,11 @@ public class Event {
     private RepeatingOptions repeatingOptions;
     private Integer disable = 0;
 
-    @JsonIgnore
+   
     @Column(insertable = false, updatable = false)
     private Integer ownerId;
-
+    
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ownerId")
     private User owner;
