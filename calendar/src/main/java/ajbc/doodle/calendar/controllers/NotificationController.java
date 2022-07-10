@@ -17,6 +17,7 @@ import ajbc.doodle.calendar.entities.ErrorMessage;
 import ajbc.doodle.calendar.entities.Event;
 import ajbc.doodle.calendar.entities.Notification;
 import ajbc.doodle.calendar.entities.User;
+import ajbc.doodle.calendar.exceptions.ForbiddenException;
 import ajbc.doodle.calendar.exceptions.NotAuthorizedException;
 import ajbc.doodle.calendar.services.EventService;
 import ajbc.doodle.calendar.services.NotificationService;
@@ -56,8 +57,13 @@ public class NotificationController {
 			return ResponseEntity.status(HttpStatus.CREATED).body(notification);
 		} catch (NotAuthorizedException e) {
 			ErrorMessage errMsg = new ErrorMessage();
-			errMsg.setData(e.getMessage());
+			errMsg.setMessage(e.getMessage());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errMsg);
+		} catch (ForbiddenException e) {
+            ErrorMessage errMsg = new ErrorMessage();
+            errMsg.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errMsg);
+			
 		} catch (DaoException e) {
 			ErrorMessage errMsg = new ErrorMessage();
 			errMsg.setData(e.getMessage());
@@ -85,6 +91,11 @@ public class NotificationController {
             ErrorMessage errMsg = new ErrorMessage();
             errMsg.setMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errMsg);
+            
+        } catch (ForbiddenException e) {
+            ErrorMessage errMsg = new ErrorMessage();
+            errMsg.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errMsg);
         } catch (DaoException e) {
             ErrorMessage errMsg = new ErrorMessage();
             errMsg.setData(e.getMessage());

@@ -37,7 +37,7 @@ public class SeedUser {
 
 		 //seedUsers();
 		 //seedEvents();
-		seedNotifications();
+		//seedNotifications();
 
 	}
 
