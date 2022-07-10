@@ -38,6 +38,22 @@ public class UserService {
         return userDao.getUser(email);
     }
 	
+	/**
+     * Return if the user exists in the DB
+     * @param userId - the user id
+     * @return true if the user exists in the DB
+     */
+    public Boolean isUserExist(Integer userId) {
+        try {
+            userDao.getUser(userId);
+            return true;
+        } catch (DaoException e) {
+            return false;
+        }
+    }
+	
+	
+	
 	 public List<User> getUsersByEventId(Integer eventId) throws DaoException {
 	        return userDao.getUsersByEventId(eventId);
 	    }

@@ -105,7 +105,7 @@ public class EventController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, path = "/user/{userId}")
-	public ResponseEntity<?> addEvent(@RequestBody Event event, @PathVariable Integer userId,
+	public ResponseEntity<?> addEventByUser(@RequestBody Event event, @PathVariable Integer userId,
 			@RequestParam(required = false) List<Integer> guestsIds) {
 		try {
 			eventService.addEvent(event, userId, guestsIds);
@@ -119,7 +119,7 @@ public class EventController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, path = "/multiple/user/{userId}")
-	public ResponseEntity<?> addMultipleEvents(@RequestBody List<Event> events, @PathVariable Integer userId,
+	public ResponseEntity<?> addEventsByUser(@RequestBody List<Event> events, @PathVariable Integer userId,
 			@RequestParam(required = false) List<Integer> guestsIds) {
 		try {
 			eventService.addEvents(events, userId, guestsIds);

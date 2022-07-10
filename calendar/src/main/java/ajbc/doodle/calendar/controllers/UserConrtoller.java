@@ -116,6 +116,11 @@ public class UserConrtoller {
 	        return ResponseEntity.ok(users);
 	    }
 	  
+	  @RequestMapping(method = RequestMethod.GET, path = "/exist/id/{userId}")
+	    public ResponseEntity<?> isUserExist(@PathVariable Integer userId) {
+	        return ResponseEntity.ok(userService.isUserExist(userId));
+	    }
+	  
 	  @RequestMapping(method = RequestMethod.PUT, path = "/id/{userId}")
 	    public ResponseEntity<?> updateUser(@PathVariable Integer userId, @RequestBody User user) {
 	        try {
