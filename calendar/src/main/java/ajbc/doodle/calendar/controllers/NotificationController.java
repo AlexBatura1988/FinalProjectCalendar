@@ -45,22 +45,54 @@ public class NotificationController {
 	public ResponseEntity<?> addNotification(@PathVariable Integer userId, @PathVariable Integer eventId,
 			@RequestBody Notification notification) throws DaoException {
 		try {
-			 User owner = userService.getUser(userId);
-			 Event event = eventService.getEventById(eventId);
-			 notification.setOwner(owner);
-	            notification.setEvent(event);
-			notificationService.addNotification(notification);
+			User owner = userService.getUser(userId);
+			Event event = eventService.getEventById(eventId);
+			if (!owner.getUserId().equals(event.getOwnerId())) {
+				throw new NotAuthorizedException("Only the owner of an event can add notifications");
+			}
+
+			notificationService.addNotification(owner, event, notification);
+
 			return ResponseEntity.status(HttpStatus.CREATED).body(notification);
 		} catch (NotAuthorizedException e) {
 			ErrorMessage errMsg = new ErrorMessage();
-            errMsg.setData(e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errMsg);
+			errMsg.setData(e.getMessage());
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errMsg);
 		} catch (DaoException e) {
+			ErrorMessage errMsg = new ErrorMessage();
+			errMsg.setData(e.getMessage());
+			errMsg.setMessage("Failed to add notification to DB.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errMsg);
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, path = "multiple/user/{userId}/event/{eventId}")
+    public ResponseEntity<?> addNotifications(@PathVariable Integer userId, @PathVariable Integer eventId, @RequestBody List<Notification> notifications) throws DaoException {
+        try {
+            User owner = userService.getUser(userId);
+            Event event = eventService.getEventById(eventId);
+
+            if (!owner.getUserId().equals(event.getOwnerId())) {
+                throw new NotAuthorizedException("Only the owner of an event can add notifications");
+            }
+
+            for (Notification notification : notifications) {
+                notificationService.addNotification(owner, event, notification);
+            }
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(notifications);
+        } catch (NotAuthorizedException e) {
+            ErrorMessage errMsg = new ErrorMessage();
+            errMsg.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errMsg);
+        } catch (DaoException e) {
             ErrorMessage errMsg = new ErrorMessage();
             errMsg.setData(e.getMessage());
             errMsg.setMessage("Failed to add notification to DB.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errMsg);
         }
-	}
+    }
+	
+	
 
 }

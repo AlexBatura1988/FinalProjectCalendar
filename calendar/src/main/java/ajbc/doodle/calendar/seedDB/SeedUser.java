@@ -35,9 +35,9 @@ public class SeedUser {
 	@EventListener
 	public void seedUserDB(ContextRefreshedEvent event) throws DaoException, NotAuthorizedException {
 
-		// seedUsers();
-		// seedEvents();
-		//seedNotifications();
+		 //seedUsers();
+		 //seedEvents();
+		seedNotifications();
 
 	}
 
@@ -56,15 +56,15 @@ public class SeedUser {
 	public void seedEvents() throws DaoException, NotAuthorizedException {
 		List<User> users = userService.getAllUsers();
 
-		eventService.addEvent(new Event(users.get(1), "test", true, LocalDateTime.of(2022, 8, 7, 6, 0),
-				LocalDateTime.of(2022, 9, 7, 5, 0), "addres", "test description", RepeatingOptions.DAILY, users));
+		eventService.addEvent(new Event(users.get(1), "test-6", true, LocalDateTime.of(2022, 5, 4, 6, 0),
+				LocalDateTime.of(2022, 9, 7, 3, 0), "holon", "test description", RepeatingOptions.DAILY, users));
 
 	}
 
-	public void seedNotifications() throws DaoException, NotAuthorizedException {
+	public void seedNotifications() throws DaoException {
 
-		User user = userService.getUser(75);
-		Event event = eventService.getEventById(22);
+		User user = userService.getUser(1);
+		Event event = eventService.getEventById(1);
 
 		notificationService.addNotification(new Notification(user, event, "testTitle", Unit.HOURS, 2));
 

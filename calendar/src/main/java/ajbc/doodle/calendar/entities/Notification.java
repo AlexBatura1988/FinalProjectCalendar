@@ -53,7 +53,7 @@ public class Notification {
 	/**
 	 * The owner of the event
 	 */
-	//@JsonIgnore
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ownerId")
 	private User owner;

@@ -54,7 +54,7 @@ public class Event {
 	@Enumerated(EnumType.STRING)
 	private RepeatingOptions repeatingOptions;
 	private Integer disable = 0;
-
+    
 	@Column(insertable = false, updatable = false)
 	private Integer ownerId;
 
@@ -71,6 +71,7 @@ public class Event {
 	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.EAGER)
 	@JoinTable(name = "usersEvents", joinColumns = @JoinColumn(name = "eventId"), inverseJoinColumns = @JoinColumn(name = "userId"))
 	private List<User> guests;
+	//private Set<User> guests = new HashSet<User>();
 
 	public Event(String title, Boolean isAllDay, LocalDateTime startDate, LocalDateTime endDate, String address,
 			String description, RepeatingOptions repeatingOptions, List<User> guests) {

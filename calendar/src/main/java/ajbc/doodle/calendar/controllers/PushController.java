@@ -96,7 +96,7 @@ public class PushController {
 	public void subscribe(@RequestBody Subscription subscription, @PathVariable(required = false) String email) {
 		//if user is registered allow subscription
 		this.subscriptions.put(subscription.getEndpoint(), subscription);
-		System.out.println("Subscription added with email "+email);
+		System.out.println("Subscription added with email "+subscription.getKeys());
 	}
 
 	

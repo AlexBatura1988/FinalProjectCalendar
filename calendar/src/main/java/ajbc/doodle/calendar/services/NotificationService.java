@@ -28,15 +28,37 @@ public class NotificationService {
 	 * 
 	 * @param notification - the notification to create
 	 */
-	public void addNotification(Notification notification) throws DaoException, NotAuthorizedException {
-		if (!notification.getEvent().getOwnerId().equals(notification.getOwner().getUserId())) {
-			throw new NotAuthorizedException("Only the owner of an event can add notifications");
-		}
+	public void addNotification(Notification notification) throws DaoException {
+
 		notificationDao.addNotification(notification);
+	}
+
+	/**
+	 * 
+	 * Create notification
+	 * 
+	 * @param owner        - the owner of the event * @param event - the event to of
+	 *                     the notification
+	 * @param notification - the notification to create
+	 * 
+	 *                     public List<Notification> getAllNotification() throws
+	 *                     DaoException { return
+	 *                     notificationDao.getAllNotifications(); }
+	 * @throws NotAuthorizedException
+	 */
+
+	public void addNotification(User owner, Event event, Notification notification)
+			throws DaoException {
+		notification.setOwner(owner);
+
+		notification.setEvent(event);
+		this.addNotification(notification);
+
 	}
 
 	public List<Notification> getAllNotification() throws DaoException {
 		return notificationDao.getAllNotifications();
+
 	}
 
 	public Notification getNotificationById(Integer notificationId) throws DaoException {

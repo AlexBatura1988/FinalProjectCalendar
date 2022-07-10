@@ -48,7 +48,7 @@ public class EventService {
 		eventDao.addEvent(event);
 	}
 	
-	public void addEvent(Event event) throws DaoException, NotAuthorizedException {
+	public void addEvent(Event event) throws DaoException {
 		eventDao.addEvent(event);
 		if(event.getNotifications().isEmpty()) {
             Notification notification = new Notification(event.getOwner(), event);
