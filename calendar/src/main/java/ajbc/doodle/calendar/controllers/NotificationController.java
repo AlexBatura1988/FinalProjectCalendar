@@ -62,7 +62,24 @@ public class NotificationController {
             errMsg.setMessage("Failed to get notification from DB.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errMsg);
         }
-    }	    
+    }
+	
+	 @RequestMapping(method = RequestMethod.GET, path = "event/{eventId}")
+	    public ResponseEntity<?> getNotificationsByEventId(@PathVariable Integer eventId) {
+	        try {
+	            Event event = eventService.getEventById(eventId);
+	            if (event == null) {
+	                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	            }
+	            return ResponseEntity.ok(event.getNotifications());
+	        } catch (DaoException e) {
+	            ErrorMessage errMsg = new ErrorMessage();
+	            errMsg.setData(e.getMessage());
+	            errMsg.setMessage("Failed to get all notifications from DB.");
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errMsg);
+	        }
+
+	    }
 
 	@RequestMapping(method = RequestMethod.POST, path = "/user/{userId}/event/{eventId}")
 	public ResponseEntity<?> addNotification(@PathVariable Integer userId, @PathVariable Integer eventId,
