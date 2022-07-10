@@ -56,18 +56,36 @@ public class NotificationService {
 		this.addNotification(notification);
 
 	}
+	
+	/**
+     * Get all notification
+     * @return list of notifications
+     */
 
 	public List<Notification> getAllNotification() throws DaoException {
 		return notificationDao.getAllNotifications();
 
 	}
+	
+	/**
+     * Get the notification by id
+     * @param notificationId - the notification id
+     * @return a notification
+     */
 
 	public Notification getNotificationById(Integer notificationId) throws DaoException {
 		return notificationDao.getNotifivationById(notificationId);
 	}
-
-	public void updateNotification(Notification notif) throws DaoException {
-		notificationDao.updateNotifivation(notif);
+	
+	
+	/**
+     * update an existing notification
+     * @param notification - the modified notification
+     */
+	 public void updateNotification(Notification notification) throws DaoException {
+	        Notification original = this.getNotificationById(notification.getNotificationId());
+	        original.merge(notification);
+	        notificationDao.updateNotifivation(original);
 	}
 
 	public void deleteNotificationById(Integer notificationId) throws DaoException {

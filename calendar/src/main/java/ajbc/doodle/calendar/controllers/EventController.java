@@ -147,7 +147,7 @@ public class EventController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, path = "/user/{ownerId}/eventId/{eventId}")
-	public ResponseEntity<?> updateEvent(@PathVariable Integer ownerId, @PathVariable Integer eventId,
+	public ResponseEntity<?> updateEvents(@PathVariable Integer ownerId, @PathVariable Integer eventId,
 			@RequestBody Event event) {
 		try {
 

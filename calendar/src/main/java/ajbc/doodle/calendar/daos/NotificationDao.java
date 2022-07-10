@@ -24,7 +24,11 @@ public interface NotificationDao {
 		public default void addNotification(Notification notification) throws DaoException {
 			throw new DaoException("Method not implemented");
 		}
-
+		
+		/**
+	     * Update notification in the DB
+	     * @param notification = the modified notification
+	     */
 		@Transactional(readOnly = false)
 		public default void updateNotifivation(Notification notification) throws DaoException {
 			throw new DaoException("Method not implemented");

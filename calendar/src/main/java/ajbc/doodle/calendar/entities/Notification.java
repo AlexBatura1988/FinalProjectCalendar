@@ -46,7 +46,7 @@ public class Notification {
 	/**
 	 * * The owner id
 	 */
-	@JsonIgnore
+	
 	@Column(insertable = false, updatable = false)
 	private Integer ownerId;
 
@@ -54,14 +54,14 @@ public class Notification {
 	 * The owner of the event
 	 */
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
 	@JoinColumn(name = "ownerId")
 	private User owner;
 
 	/**
 	 * The event id
 	 */
-	@JsonIgnore
+	
 	@Column(insertable = false, updatable = false)
 	private Integer eventId;
 
@@ -69,7 +69,7 @@ public class Notification {
 	 * The event of the notification
 	 */
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
 	@JoinColumn(name = "eventId")
 	private Event event;
 
@@ -112,5 +112,15 @@ public class Notification {
 		this.unit = unit;
 		this.timeBeforeEvent = timeBeforeEvent;
 	}
+	
+	/**
+     * Merge the notification data into this
+     * @param notification - the modified notification
+     */
+    public void merge(Notification notification) {
+        this.title = notification.title;
+        this.unit = notification.unit;
+        this.timeBeforeEvent = notification.timeBeforeEvent;
+    }
 
 }

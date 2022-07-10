@@ -143,6 +143,46 @@ public class NotificationController {
         }
     }
 	
+	@RequestMapping(method = RequestMethod.PUT, path = "/user/{ownerId}")
+    public ResponseEntity<?> updateNotification(@PathVariable Integer ownerId, @RequestBody Notification notification) {
+        try {
+            if (!notification.getOwnerId().equals(ownerId)) {
+                ErrorMessage errorMessage = new ErrorMessage();
+                errorMessage.setMessage("The user must be the owner of the notification");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+            }
+            notificationService.updateNotification(notification);
+            return ResponseEntity.status(HttpStatus.OK).body(notification);
+        } catch (DaoException e) {
+            ErrorMessage errorMsg = new ErrorMessage();
+            errorMsg.setData(e.getMessage());
+            errorMsg.setMessage("failed to update the event");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMsg);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, path = "/multiple/user/{ownerId}")
+    public ResponseEntity<?> updateNotifications(@PathVariable Integer ownerId, @RequestBody List<Notification> notifications) {
+        try {
+            for (Notification notification : notifications) {
+                if (!notification.getOwnerId().equals(ownerId)) {
+                    ErrorMessage errorMessage = new ErrorMessage();
+                    errorMessage.setMessage("The user must be the owner of the notification");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+                }
+            }
+            for (Notification notification : notifications) {
+                notificationService.updateNotification(notification);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(notifications);
+        } catch (DaoException e) {
+            ErrorMessage errorMsg = new ErrorMessage();
+            errorMsg.setData(e.getMessage());
+            errorMsg.setMessage("failed to update the event");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMsg);
+        }
+    }
+	
 	
 
 }
