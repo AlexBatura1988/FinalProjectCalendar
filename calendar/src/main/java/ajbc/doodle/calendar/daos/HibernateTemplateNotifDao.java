@@ -37,6 +37,15 @@ public class HibernateTemplateNotifDao implements NotificationDao {
 			throw new DaoException("No notification   in the DB with id: " + notificationId);
 		return notification;
 	}
+	
+	 @Override
+	    public List<Notification> getNotificationsByIds(List<Integer> notificationIds) throws DaoException {
+	        DetachedCriteria criteria = DetachedCriteria.forClass(Notification.class);
+	        criteria.add(Restrictions.in("id", notificationIds));
+	        return (List<Notification>) template.findByCriteria(criteria);
+	    }
+	
+	
 
 	@Override
 	public List<Notification> getAllNotifications() throws DaoException {

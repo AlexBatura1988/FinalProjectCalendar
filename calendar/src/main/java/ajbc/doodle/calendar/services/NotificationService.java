@@ -38,17 +38,18 @@ public class NotificationService {
 	/**
 	 * 
 	 * Create notification
+	 * 
 	 * @param owner        - the owner of the event
 	 * @param event        - the event to of the notification
 	 * @param notification - the notification to create
 	 */
 
 	public void addNotification(User owner, Event event, Notification notification)
-			throws DaoException,ForbiddenException {
-		
-		if((long) event.getNotifications().size() >= NOTIFICATIONS_LIMIT) {
-            throw new ForbiddenException("The owner can add only " + NOTIFICATIONS_LIMIT + " notifications per event");
-        }
+			throws DaoException, ForbiddenException {
+
+		if ((long) event.getNotifications().size() >= NOTIFICATIONS_LIMIT) {
+			throw new ForbiddenException("The owner can add only " + NOTIFICATIONS_LIMIT + " notifications per event");
+		}
 
 		notification.setOwner(owner);
 
@@ -56,40 +57,63 @@ public class NotificationService {
 		this.addNotification(notification);
 
 	}
-	
+
 	/**
-     * Get all notification
-     * @return list of notifications
-     */
+	 * Get all notification
+	 * 
+	 * @return list of notifications
+	 */
 
 	public List<Notification> getAllNotification() throws DaoException {
 		return notificationDao.getAllNotifications();
 
 	}
-	
+
 	/**
-     * Get the notification by id
-     * @param notificationId - the notification id
-     * @return a notification
-     */
+	 * Get the notification by id
+	 * 
+	 * @param notificationId - the notification id
+	 * @return a notification
+	 */
 
 	public Notification getNotificationById(Integer notificationId) throws DaoException {
 		return notificationDao.getNotifivationById(notificationId);
 	}
-	
-	
+
 	/**
-     * update an existing notification
-     * @param notification - the modified notification
-     */
-	 public void updateNotification(Notification notification) throws DaoException {
-	        Notification original = this.getNotificationById(notification.getNotificationId());
-	        original.merge(notification);
-	        notificationDao.updateNotifivation(original);
+	 * Get the notifications of notificationIds
+	 * 
+	 * @param notificationIds - the ids to extract
+	 * @return list of notifications
+	 */
+	public List<Notification> getNotificationsByIds(List<Integer> notificationIds) throws DaoException {
+		return notificationDao.getNotificationsByIds(notificationIds);
 	}
 
-	public void deleteNotificationById(Integer notificationId) throws DaoException {
-		notificationDao.deleteNotificationById(notificationId);
+	/**
+	 * update an existing notification
+	 * 
+	 * @param notification - the modified notification
+	 */
+	public void updateNotification(Notification notification) throws DaoException {
+		Notification original = this.getNotificationById(notification.getNotificationId());
+		original.merge(notification);
+		notificationDao.updateNotifivation(original);
+	}
+
+	/**
+	 * Delete the notification
+	 * 
+	 * @param notification - the notification to delete
+	 * @param soft         - if soft delete or hard delete
+	 */
+	public void deleteNotification(Notification notification, Boolean soft) throws DaoException {
+		if (soft) {
+			notification.setDisable(1);
+			notificationDao.updateNotifivation(notification);
+		} else {
+			// TODO
+		}
 	}
 
 }

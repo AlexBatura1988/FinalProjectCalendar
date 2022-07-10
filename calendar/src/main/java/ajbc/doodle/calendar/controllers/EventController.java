@@ -199,7 +199,7 @@ public class EventController {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, path = "/user/{ownerId}/id/{eventId}")
-	public ResponseEntity<?> deleteUser(@PathVariable Integer ownerId, @PathVariable Integer eventId,
+	public ResponseEntity<?> deleteEvent(@PathVariable Integer ownerId, @PathVariable Integer eventId,
 			@RequestParam(defaultValue = "true") Boolean soft) throws DaoException {
 		try {
 			Event event = eventService.getEventById(eventId);
@@ -218,7 +218,7 @@ public class EventController {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, path = "/multiple/user/{ownerId}")
-	public ResponseEntity<?> deleteUser(@PathVariable Integer ownerId, @RequestParam List<Integer> eventIds,
+	public ResponseEntity<?> deleteEvents(@PathVariable Integer ownerId, @RequestParam List<Integer> eventIds,
 			@RequestParam(defaultValue = "true") Boolean soft) throws DaoException {
 		try {
 			List<Event> events = eventService.getEventsByIds(eventIds);
