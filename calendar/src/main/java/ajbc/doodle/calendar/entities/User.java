@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.JoinColumn;
 
@@ -61,6 +62,20 @@ public class User {
 	private LocalDate joinDate;
 	@JsonIgnore
 	private Integer disable;
+	
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String endPoint;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String p256dh;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String auth;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Boolean isSubscribed;
+	
+	
 
 	@JsonIgnore
 	@ManyToMany(mappedBy = "guests", cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)

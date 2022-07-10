@@ -133,39 +133,39 @@ public class PushController {
 //	}
 
 
-	private void sendPushMessageToAllSubscribersWithoutPayload() {
-		Set<String> failedSubscriptions = new HashSet<>();
-		for (Subscription subscription : this.subscriptions.values()) {
-			boolean remove = sendPushMessage(subscription, null);
-			if (remove) {
-				failedSubscriptions.add(subscription.getEndpoint());
-			}
-		}
-		failedSubscriptions.forEach(this.subscriptions::remove);
-	}
+//	private void sendPushMessageToAllSubscribersWithoutPayload() {
+//		Set<String> failedSubscriptions = new HashSet<>();
+//		for (Subscription subscription : this.subscriptions.values()) {
+//			boolean remove = sendPushMessage(subscription, null);
+//			if (remove) {
+//				failedSubscriptions.add(subscription.getEndpoint());
+//			}
+//		}
+//		failedSubscriptions.forEach(this.subscriptions::remove);
+//	}
 
-	private void sendPushMessageToAllSubscribers(Map<String, Subscription> subs, Object message)
-			throws JsonProcessingException {
-
-		Set<String> failedSubscriptions = new HashSet<>();
-
-		for (Subscription subscription : subs.values()) {
-			try {
-				byte[] result = this.cryptoService.encrypt(this.objectMapper.writeValueAsString(message),
-						subscription.getKeys().getP256dh(), subscription.getKeys().getAuth(), 0);
-				boolean remove = sendPushMessage(subscription, result);
-				if (remove) {
-					failedSubscriptions.add(subscription.getEndpoint());
-				}
-			} catch (InvalidKeyException | NoSuchAlgorithmException | InvalidAlgorithmParameterException
-					| IllegalStateException | InvalidKeySpecException | NoSuchPaddingException
-					| IllegalBlockSizeException | BadPaddingException e) {
-				Application.logger.error("send encrypted message", e);
-			}
-		}
-
-		failedSubscriptions.forEach(subs::remove);
-	}
+//	private void sendPushMessageToAllSubscribers(Map<String, Subscription> subs, Object message)
+//			throws JsonProcessingException {
+//
+//		Set<String> failedSubscriptions = new HashSet<>();
+//
+//		for (Subscription subscription : subs.values()) {
+//			try {
+//				byte[] result = this.cryptoService.encrypt(this.objectMapper.writeValueAsString(message),
+//						subscription.getKeys().getP256dh(), subscription.getKeys().getAuth(), 0);
+//				boolean remove = sendPushMessage(subscription, result);
+//				if (remove) {
+//					failedSubscriptions.add(subscription.getEndpoint());
+//				}
+//			} catch (InvalidKeyException | NoSuchAlgorithmException | InvalidAlgorithmParameterException
+//					| IllegalStateException | InvalidKeySpecException | NoSuchPaddingException
+//					| IllegalBlockSizeException | BadPaddingException e) {
+//				Application.logger.error("send encrypted message", e);
+//			}
+//		}
+//
+//		failedSubscriptions.forEach(subs::remove);
+//	}
 
 	/**
 	 * @return true if the subscription is no longer valid and can be removed, false

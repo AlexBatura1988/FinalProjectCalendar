@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import ajbc.doodle.calendar.daos.DaoException;
 import ajbc.doodle.calendar.daos.UserDao;
 import ajbc.doodle.calendar.entities.User;
+import ajbc.doodle.calendar.entities.webpush.Subscription;
 
 @Service
 public class UserService {
@@ -80,6 +81,29 @@ public class UserService {
 	 
 	 public void updateUser(User user) throws DaoException {
 	        userDao.updateUser(user);
+	    }
+	 
+	 public void subscribeUser(Subscription subscription, User user) throws DaoException {
+	        user.setEndPoint(subscription.getEndpoint());
+	        user.setP256dh(subscription.getKeys().getP256dh());
+	        user.setAuth(subscription.getKeys().getAuth());
+	        user.setIsSubscribed(true);
+	        userDao.updateUser(user);
+	    }
+
+	    public void unsubscribeUser(User user) throws DaoException {
+	        user.setEndPoint(null);
+	        user.setP256dh(null);
+	        user.setAuth(null);
+	        user.setIsSubscribed(false);
+	        userDao.updateUser(user);
+	    }
+	    public List<User> getUsersByEndpoint(String endpoint) throws DaoException {
+	        return userDao.getUsersByEndpoint(endpoint);
+	    }
+
+	    public Boolean isSubscribed(String endpoint) throws DaoException {
+	        return this.getUsersByEndpoint(endpoint).size() > 0;
 	    }
 	
 	public List<User> getAllUsers() throws DaoException{

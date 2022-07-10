@@ -35,7 +35,7 @@ public class SeedUser {
 	@EventListener
 	public void seedUserDB(ContextRefreshedEvent event) throws DaoException, NotAuthorizedException {
 
-		 //seedUsers();
+		// seedUsers();
 		 //seedEvents();
 		//seedNotifications();
 
@@ -53,7 +53,7 @@ public class SeedUser {
 
 	}
 
-	public void seedEvents() throws DaoException, NotAuthorizedException {
+	public void seedEvents() throws DaoException {
 		List<User> users = userService.getAllUsers();
 
 		eventService.addEvent(new Event(users.get(1), "test-6", true, LocalDateTime.of(2022, 5, 4, 6, 0),

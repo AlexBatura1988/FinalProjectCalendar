@@ -34,8 +34,8 @@ async function checkSubscription() {
 	const registration = await navigator.serviceWorker.ready;
 	const subscription = await registration.pushManager.getSubscription();
 	if (subscription) {
-
-		const response = await fetch("/isSubscribed", {
+//add users
+		const response = await fetch("/users/isSubscribed", {
 			method: 'POST',
 			body: JSON.stringify({ endpoint: subscription.endpoint }),
 			headers: {
@@ -58,7 +58,8 @@ async function checkSubscription() {
 }
 
 async function init() {
-	fetch('/publicSigningKey')
+	//add notifications
+	fetch('/notifications/publicSigningKey')
 		.then(response => response.arrayBuffer())
 		.then(key => this.publicSigningKey = key)
 		.finally(() => console.info('Application Server Public Key fetched from the server'));
@@ -105,7 +106,7 @@ async function unsubscribe() {
 		if (successful) {
 			console.info('Unsubscription successful');
 
-			await fetch("/unsubscribe/" + email.value, {
+			await fetch("/users/unsubscribe/" + email.value, {
 				method: 'POST',
 				body: JSON.stringify({ endpoint: subscription.endpoint }),
 				headers: {
@@ -134,6 +135,11 @@ async function subscribe() {
 		alert.style.display = "none";
 	}
 	const registration = await navigator.serviceWorker.ready;
+
+	if (Notification.permission === 'denied') {
+		await Notification.requestPermission();
+	}
+
 	const subscription = await registration.pushManager.subscribe({
 		userVisibleOnly: true,
 		applicationServerKey: this.publicSigningKey
@@ -141,7 +147,7 @@ async function subscribe() {
 
 	console.info(`Subscribed to Push Service: ${subscription.endpoint}`);
 
-	await fetch("/subscribe/" + email.value, {
+	await fetch("/users/subscribe/" + email.value, {
 		method: 'POST',
 		body: JSON.stringify(subscription),
 		headers: {

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,7 @@ import ajbc.doodle.calendar.entities.Notification;
 import ajbc.doodle.calendar.entities.User;
 import ajbc.doodle.calendar.exceptions.ForbiddenException;
 import ajbc.doodle.calendar.exceptions.NotAuthorizedException;
+import ajbc.doodle.calendar.managers.WebPushManager;
 import ajbc.doodle.calendar.services.EventService;
 import ajbc.doodle.calendar.services.NotificationService;
 import ajbc.doodle.calendar.services.UserService;
@@ -34,6 +36,9 @@ public class NotificationController {
 	UserService userService;
 	@Autowired
 	EventService eventService;
+	
+	@Autowired
+    WebPushManager webPushManager;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAllNotifications() throws DaoException {
@@ -237,5 +242,17 @@ public class NotificationController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMsg);
 		}
 	}
+	
+	@GetMapping(path = "/publicSigningKey", produces = "application/octet-stream")
+    public byte[] publicSigningKey() {
+        return webPushManager.getServerKeys().getPublicKeyUncompressed();
+    }
+
+    @GetMapping(path = "/publicSigningKeyBase64")
+    public String publicSigningKeyBase64() {
+        return webPushManager.getServerKeys().getPublicKeyBase64();
+    }
+	
+	
 
 }
