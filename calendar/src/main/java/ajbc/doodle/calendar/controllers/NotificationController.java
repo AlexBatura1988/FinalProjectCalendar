@@ -35,12 +35,34 @@ public class NotificationController {
 	EventService eventService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<Notification>> getAllNotifications() throws DaoException {
+	public ResponseEntity<?> getAllNotifications() throws DaoException {
+		try {
 		List<Notification> notifications = notificationService.getAllNotification();
 		if (notifications == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		
 		return ResponseEntity.ok(notifications);
+		} catch (DaoException e) {
+            ErrorMessage errMsg = new ErrorMessage();
+            errMsg.setData(e.getMessage());
+            errMsg.setMessage("Failed to get all notifications from DB.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errMsg);
+        }
+
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, path = "/id/{notificationId}")
+    public ResponseEntity<?> getAllNotifications(@PathVariable Integer notificationId) {
+        try {
+            Notification notification = notificationService.getNotificationById(notificationId);
+            return ResponseEntity.ok(notification);
+        } catch (DaoException e) {
+            ErrorMessage errMsg = new ErrorMessage();
+            errMsg.setData(e.getMessage());
+            errMsg.setMessage("Failed to get notification from DB.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errMsg);
+        }
+    }	    
 
 	@RequestMapping(method = RequestMethod.POST, path = "/user/{userId}/event/{eventId}")
 	public ResponseEntity<?> addNotification(@PathVariable Integer userId, @PathVariable Integer eventId,
