@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -32,6 +35,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "users")
+@Where(clause = "disable = 0")
 public class User {
 
 	public User(String firstName, String lastName, String email, LocalDate birthDate, LocalDate joinDate,
@@ -51,6 +55,7 @@ public class User {
 	private Integer userId;
 	private String firstName;
 	private String lastName;
+	@Column(unique = true)
 	private String email;
 	private LocalDate birthDate;
 	private LocalDate joinDate;
@@ -59,6 +64,7 @@ public class User {
 
 	@JsonIgnore
 	@ManyToMany(mappedBy = "guests", cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@Where(clause = "disable = 0")
 	private Set<Event> events = new HashSet<>();
 	
 	public void removeAllEvents() {

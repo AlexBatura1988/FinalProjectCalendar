@@ -22,6 +22,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Where;
+
 import javax.persistence.JoinColumn;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -38,6 +41,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "Events")
+@Where(clause = "disable = 0")
 public class Event {
 
 	@Id
@@ -61,17 +65,20 @@ public class Event {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ownerId")
+	@Where(clause = "disable = 0")
 	private User owner;
 	
 	@JsonIgnore
     @OneToMany(mappedBy = "event", cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@Where(clause = "disable = 0")
     private Set<Notification> notifications = new HashSet<>();
 
 	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.EAGER)
 	@JoinTable(name = "usersEvents", joinColumns = @JoinColumn(name = "eventId"), inverseJoinColumns = @JoinColumn(name = "userId"))
+	@Where(clause = "disable = 0")
 	private List<User> guests;
-	//private Set<User> guests = new HashSet<User>();
+	
 
 	public Event(String title, Boolean isAllDay, LocalDateTime startDate, LocalDateTime endDate, String address,
 			String description, RepeatingOptions repeatingOptions, List<User> guests) {

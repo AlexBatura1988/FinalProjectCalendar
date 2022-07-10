@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Where;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -33,6 +35,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "notifications")
+@Where(clause = "disable = 0")
 public class Notification {
 
 	/**
@@ -56,6 +59,7 @@ public class Notification {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
 	@JoinColumn(name = "ownerId")
+	@Where(clause = "disable = 0")
 	private User owner;
 
 	/**
@@ -71,6 +75,7 @@ public class Notification {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
 	@JoinColumn(name = "eventId")
+	@Where(clause = "disable = 0")
 	private Event event;
 
 	/**
