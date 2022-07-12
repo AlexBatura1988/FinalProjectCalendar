@@ -52,11 +52,13 @@ public class HibernateTemplateNotifDao implements NotificationDao {
 	}
 
 	@Override
-	public void deleteNotificationById(Integer notificationId) throws DaoException {
-		Notification notif = getNotificationById(notificationId);
-		notif.setDisable(1);
-		;
-		updateNotification(notif);
+	public void deleteNotification(Notification notification) throws DaoException {
+//		Notification notif = getNotificationById(notification);
+//		notif.setDisable(1);
+//		;
+//		updateNotification(notif);
+		
+		template.delete(notification);
 	}
 
 	@Override

@@ -112,13 +112,12 @@ public class NotificationService {
 			notification.setDisable(1);
 			return notificationDao.updateNotification(notification);
 		} else {
-			// TODO
+			notificationDao.deleteNotification(notification);
+            return notification;
 		}
-		return null;
+		
 	}
 	
-//	public List<Notification> getNotificationsByEventId(Integer eventId) throws DaoException {
-//		return notificationDao.getNotificationsByEventId(eventId);
-//	}
+
 
 }
