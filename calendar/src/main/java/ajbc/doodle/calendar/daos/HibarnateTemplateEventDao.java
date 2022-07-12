@@ -23,8 +23,8 @@ public class HibarnateTemplateEventDao implements EventDao {
 	@Override
 	public void addEvent(Event event) throws DaoException {
 		template.persist(event);
-	}
-
+	} 
+  
 	@Override
 	public void updateEvent(Event event) throws DaoException {
 		template.merge(event);

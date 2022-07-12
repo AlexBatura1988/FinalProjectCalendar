@@ -28,9 +28,10 @@ public interface NotificationDao {
 	 * Update notification in the DB
 	 * 
 	 * @param notification = the modified notification
+	 * @return 
 	 */
 	@Transactional(readOnly = false)
-	public default void updateNotifivation(Notification notification) throws DaoException {
+	public default Notification updateNotification(Notification notification) throws DaoException {
 		throw new DaoException("Method not implemented");
 	}
 
@@ -40,7 +41,7 @@ public interface NotificationDao {
 	 * @param notificationId - the id of the notification
 	 * @return a notification object
 	 */
-	public default Notification getNotifivationById(Integer notificationId) throws DaoException {
+	public default Notification getNotificationById(Integer notificationId) throws DaoException {
 		throw new DaoException("Method not implemented");
 	}
 	
@@ -85,5 +86,9 @@ public interface NotificationDao {
 	public default List<Notification> getDisableNotification() throws DaoException {
 		throw new DaoException("Method not implemented");
 	}
+//	
+//	public default List<Notification> getNotificationsByEventId(Integer eventId) throws DaoException {
+//		throw new DaoException("Method not implemented");
+//	}
 
 }

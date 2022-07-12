@@ -77,7 +77,7 @@ public class NotificationService {
 	 */
 
 	public Notification getNotificationById(Integer notificationId) throws DaoException {
-		return notificationDao.getNotifivationById(notificationId);
+		return notificationDao.getNotificationById(notificationId);
 	}
 
 	/**
@@ -95,10 +95,10 @@ public class NotificationService {
 	 * 
 	 * @param notification - the modified notification
 	 */
-	public void updateNotification(Notification notification) throws DaoException {
+	public Notification  updateNotification(Notification notification) throws DaoException {
 		Notification original = this.getNotificationById(notification.getNotificationId());
 		original.merge(notification);
-		notificationDao.updateNotifivation(original);
+		return notificationDao.updateNotification(original);
 	}
 
 	/**
@@ -107,13 +107,18 @@ public class NotificationService {
 	 * @param notification - the notification to delete
 	 * @param soft         - if soft delete or hard delete
 	 */
-	public void deleteNotification(Notification notification, Boolean soft) throws DaoException {
+	public Notification  deleteNotification(Notification notification, Boolean soft) throws DaoException {
 		if (soft) {
 			notification.setDisable(1);
-			notificationDao.updateNotifivation(notification);
+			return notificationDao.updateNotification(notification);
 		} else {
 			// TODO
 		}
+		return null;
 	}
+	
+//	public List<Notification> getNotificationsByEventId(Integer eventId) throws DaoException {
+//		return notificationDao.getNotificationsByEventId(eventId);
+//	}
 
 }

@@ -179,8 +179,10 @@ public class UserConrtoller {
 		try {
 			User user = userService.getUser(email);
 			userService.subscribeUser(subscription, user);
+			System.out.println("user subscribed with email: "+ user.getEmail());
 			return ResponseEntity.ok().body("User subscribed");
 		} catch (DaoException e) {
+			
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 	}
@@ -191,7 +193,10 @@ public class UserConrtoller {
 			List<User> users = userService.getUsersByEndpoint(subscription.getEndpoint());
 			for (User user : users) {
 				userService.unsubscribeUser(user);
+				
 			}
+			
+			
 
 			return ResponseEntity.ok().body("User unsubscribed");
 		} catch (DaoException e) {
@@ -204,6 +209,7 @@ public class UserConrtoller {
 		try {
 			User user = userService.getUser(email);
 			userService.unsubscribeUser(user);
+			System.out.println("user unsubscribed with email: " + user.getEmail());
 
 			return ResponseEntity.ok().body("User unsubscribed");
 		} catch (DaoException e) {

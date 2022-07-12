@@ -1,10 +1,8 @@
 package ajbc.doodle.calendar.controllers;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ajbc.doodle.calendar.daos.DaoException;
 import ajbc.doodle.calendar.entities.ErrorMessage;
 import ajbc.doodle.calendar.entities.Event;
-import ajbc.doodle.calendar.entities.User;
+import ajbc.doodle.calendar.entities.Notification;
+import ajbc.doodle.calendar.managers.NotificationManager;
 import ajbc.doodle.calendar.services.EventService;
 
 @RestController
@@ -29,6 +28,9 @@ public class EventController {
 
 	@Autowired
 	private EventService eventService;
+
+	@Autowired
+	private NotificationManager notificationManager;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAllEvents() throws DaoException {
@@ -109,6 +111,7 @@ public class EventController {
 			@RequestParam(required = false) List<Integer> guestsIds) {
 		try {
 			eventService.addEvent(event, userId, guestsIds);
+			this.notificationManager.addNotificationsByEventId(event.getEventId());
 			return ResponseEntity.status(HttpStatus.CREATED).body(event);
 		} catch (DaoException e) {
 			ErrorMessage errorMessage = new ErrorMessage();
@@ -123,6 +126,11 @@ public class EventController {
 			@RequestParam(required = false) List<Integer> guestsIds) {
 		try {
 			eventService.addEvents(events, userId, guestsIds);
+			
+			for(Event event : events) {
+				this.notificationManager.addNotifications(new ArrayList<Notification>(event.getNotifications()));
+			}
+			
 			return ResponseEntity.status(HttpStatus.CREATED).body(events);
 		} catch (DaoException e) {
 			ErrorMessage errorMessage = new ErrorMessage();

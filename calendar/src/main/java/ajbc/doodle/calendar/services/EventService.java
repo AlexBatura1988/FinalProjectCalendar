@@ -45,7 +45,7 @@ public class EventService {
 			// event.setGuests(guests);
 			event.addGuests(guests);
 		}
-		eventDao.addEvent(event);
+		this.addEvent(event);
 	}
 	
 	public void addEvent(Event event) throws DaoException {

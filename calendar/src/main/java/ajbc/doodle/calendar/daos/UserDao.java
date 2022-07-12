@@ -66,10 +66,12 @@ public interface UserDao {
 	public default List<User> getDiscontinuedUsers() throws DaoException {
 		throw new DaoException("Method not implemented");
 	}
+	public default List<User> getSubscribedUserByNotificationId(Integer notificationId) throws DaoException {
+        throw new DaoException("Method not implemented");
+    }
 
 	@Transactional(readOnly = false)
 	public default void hardDeleteAllUsers() throws DaoException {
 		throw new DaoException("Method not implemented");
 	}
-
 }

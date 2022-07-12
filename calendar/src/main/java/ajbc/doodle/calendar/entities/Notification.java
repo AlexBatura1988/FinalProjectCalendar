@@ -1,5 +1,8 @@
 package ajbc.doodle.calendar.entities;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import ajbc.doodle.calendar.enums.Unit;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,7 +39,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "notifications")
-@Where(clause = "disable = 0")
+//@Where(clause = "disable = 0")
 public class Notification {
 
 	/**
@@ -73,7 +77,7 @@ public class Notification {
 	 * The event of the notification
 	 */
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
+	@ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.MERGE})
 	@JoinColumn(name = "eventId")
 	@Where(clause = "disable = 0")
 	private Event event;
@@ -92,7 +96,7 @@ public class Notification {
 	/**
 	 * The amount of time to notify before the event.
 	 */
-	private Integer timeBeforeEvent = 24;
+	private Integer timeBeforeEvent = 0;
 
 	/**
 	 * If the notification deleted in soft delete
@@ -126,6 +130,24 @@ public class Notification {
         this.title = notification.title;
         this.unit = notification.unit;
         this.timeBeforeEvent = notification.timeBeforeEvent;
+    }
+    public LocalDateTime getNotificationDateTime() {
+        LocalDateTime eventTime = this.event.getStartDate();
+        return unit == Unit.MINUTES ? eventTime.minusHours(timeBeforeEvent) : eventTime.minusMinutes(timeBeforeEvent);
+    }
+
+    public Long getRemainingSecondsToNotification() {
+        LocalDateTime eventTime = this.event.getStartDate();
+        Duration duration = Duration.between(LocalDateTime.now(), eventTime);
+        return duration.getSeconds();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Notification n2) {
+            return this.notificationId.equals(n2.notificationId);
+        }
+        return false;
     }
 
 }

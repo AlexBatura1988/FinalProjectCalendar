@@ -57,6 +57,7 @@ public class Event {
 	private String description;
 	@Enumerated(EnumType.STRING)
 	private RepeatingOptions repeatingOptions;
+	@JsonIgnore
 	private Integer disable = 0;
     
 	@Column(insertable = false, updatable = false)

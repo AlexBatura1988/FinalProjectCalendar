@@ -5,6 +5,7 @@ const notificationOutput = document.getElementById('notification');
 
 const email = document.getElementById('email');
 const alert = document.getElementById('alert');
+const alert2 = document.getElementById('alert2');
 
 if ("serviceWorker" in navigator) {
 	try {
@@ -34,7 +35,7 @@ async function checkSubscription() {
 	const registration = await navigator.serviceWorker.ready;
 	const subscription = await registration.pushManager.getSubscription();
 	if (subscription) {
-//add users
+		//add users
 		const response = await fetch("/users/isSubscribed", {
 			method: 'POST',
 			body: JSON.stringify({ endpoint: subscription.endpoint }),
@@ -72,27 +73,32 @@ async function init() {
 	console.info('Service Worker has been installed and is ready');
 	navigator.serviceWorker.addEventListener('message', event => displayLastMessages());
 
-	//displayLastMessages();
+	displayLastMessages();
+
+
 }
+
+function renderEvent(event) {
+	event = event || {};
+	return `
+        <div class="event">
+            <h2>${event.title}</h2>
+            <p>${event.description}</p>
+        </div>
+    `;
+}
+
 
 function displayLastMessages() {
 	caches.open('data').then(dataCache => {
 		dataCache.match('notification')
 			.then(response => response ? response.text() : '')
-			.then(txt => {
-				notificationOutput.innerHTML = "";
-				notificationOutput.innerHTML = txt;
-				/*
-				txt = txt.split("(")[1];
-				txt = txt.split(")")[0];
-				txt = txt.split(",");
-
-				for (i = 0; i < txt.length; i++) {
-					line = txt[i].split("=");
-					notificationOutput.innerHTML += "<div><span class='field'>" + line[0] + "&emsp;</span><span class='value'>" + line[1] + "</span></h4>";
+			.then(eventText => {
+				if(eventText) {
+					const event = JSON.parse(eventText); 
+					notificationOutput.innerHTML = "";
+					notificationOutput.innerHTML = renderEvent(event);
 				}
-				*/
-
 			});
 
 	});
@@ -120,6 +126,9 @@ async function unsubscribe() {
 			unsubscribeButton.disabled = true;
 			email.disabled = false;
 
+			await caches.open('data').then(dataCache => dataCache.delete('notification'));
+			notificationOutput.innerHTML = "";
+
 		}
 		else {
 			console.error('Unsubscription failed');
@@ -136,6 +145,11 @@ async function subscribe() {
 	}
 	const registration = await navigator.serviceWorker.ready;
 
+
+
+
+
+
 	if (Notification.permission === 'denied') {
 		await Notification.requestPermission();
 	}
@@ -147,18 +161,25 @@ async function subscribe() {
 
 	console.info(`Subscribed to Push Service: ${subscription.endpoint}`);
 
-	await fetch("/users/subscribe/" + email.value, {
+	const res = await fetch("/users/subscribe/" + email.value, {
 		method: 'POST',
 		body: JSON.stringify(subscription),
 		headers: {
 			"content-type": "application/json"
 		}
 	});
-
 	console.info('Subscription info sent to the server');
-
-	subscribeButton.disabled = true;
-	unsubscribeButton.disabled = false;
-	email.disabled = true;
-
+	
+	if(res.status === 200) {
+		alert2.style.display = "none"; // hide the last error from the server
+		subscribeButton.disabled = true;
+		unsubscribeButton.disabled = false;
+		email.disabled = true;
+	} else {
+		// show the error message in the client
+		const message = await res.text();
+		alert2.innerText = message;
+		alert2.style.display = "block";
+		email.value = "";
+	}
 }

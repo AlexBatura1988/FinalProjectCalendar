@@ -1,5 +1,6 @@
 package ajbc.doodle.calendar.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import ajbc.doodle.calendar.entities.Notification;
 import ajbc.doodle.calendar.entities.User;
 import ajbc.doodle.calendar.exceptions.ForbiddenException;
 import ajbc.doodle.calendar.exceptions.NotAuthorizedException;
+import ajbc.doodle.calendar.managers.NotificationManager;
 import ajbc.doodle.calendar.managers.WebPushManager;
 import ajbc.doodle.calendar.services.EventService;
 import ajbc.doodle.calendar.services.NotificationService;
@@ -39,6 +41,9 @@ public class NotificationController {
 	
 	@Autowired
     WebPushManager webPushManager;
+	
+	@Autowired
+    NotificationManager notificationManager;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAllNotifications() throws DaoException {
@@ -98,6 +103,7 @@ public class NotificationController {
 			}
 
 			notificationService.addNotification(owner, event, notification);
+			this.notificationManager.addNotification(notification);
 
 			return ResponseEntity.status(HttpStatus.CREATED).body(notification);
 		} catch (NotAuthorizedException e) {
@@ -131,6 +137,7 @@ public class NotificationController {
 			for (Notification notification : notifications) {
 				notificationService.addNotification(owner, event, notification);
 			}
+			this.notificationManager.addNotifications(notifications);
 
 			return ResponseEntity.status(HttpStatus.CREATED).body(notifications);
 		} catch (NotAuthorizedException e) {
@@ -159,6 +166,7 @@ public class NotificationController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
 			}
 			notificationService.updateNotification(notification);
+			this.notificationManager.updateNotification(notification);
 			return ResponseEntity.status(HttpStatus.OK).body(notification);
 		} catch (DaoException e) {
 			ErrorMessage errorMsg = new ErrorMessage();
@@ -179,9 +187,12 @@ public class NotificationController {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
 				}
 			}
+			 List<Notification> newNotifications = new ArrayList<>();
 			for (Notification notification : notifications) {
-				notificationService.updateNotification(notification);
+				newNotifications.add(notificationService.updateNotification(notification));
+				
 			}
+			this.notificationManager.updateNotifications(newNotifications);
 			return ResponseEntity.status(HttpStatus.OK).body(notifications);
 		} catch (DaoException e) {
 			ErrorMessage errorMsg = new ErrorMessage();
@@ -201,7 +212,8 @@ public class NotificationController {
 				throw new NotAuthorizedException("Only the owner of an event can remove notifications");
 			}
 
-			notificationService.deleteNotification(notification, soft);
+			 Notification removedNotification = notificationService.deleteNotification(notification, soft);
+	            this.notificationManager.removeNotification(removedNotification);
 			return ResponseEntity.ok("The Notification deleted");
 		} catch (NotAuthorizedException e) {
 			ErrorMessage errMsg = new ErrorMessage();
@@ -228,7 +240,8 @@ public class NotificationController {
 			}
 
 			for (Notification notification : notifications) {
-				notificationService.deleteNotification(notification, soft);
+				Notification removedNotification = notificationService.deleteNotification(notification, soft);
+                this.notificationManager.removeNotification(removedNotification);
 			}
 			return ResponseEntity.ok("The Notifications deleted");
 		} catch (NotAuthorizedException e) {

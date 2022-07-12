@@ -18,7 +18,12 @@ async function handlePushEvent(event) {
 
 		const msg = event.data.json();
 
-		await dataCache.put('notification', new Response(msg.body));
+		if (needToShow) {
+            await self.registration.showNotification(`Event: ${msg.title}`, {
+                body: `Event description: ${msg.description}`,
+            });
+        }
+        await dataCache.put('notification', new Response(JSON.stringify(msg)));
 	}
 
 	const allClients = await clients.matchAll({ includeUncontrolled: true });

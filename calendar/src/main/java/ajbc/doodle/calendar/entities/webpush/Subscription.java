@@ -8,6 +8,7 @@ public class Subscription {
 
   private final Long expirationTime;
 
+ 
   public final SubscriptionKeys keys;
 
   @JsonCreator
