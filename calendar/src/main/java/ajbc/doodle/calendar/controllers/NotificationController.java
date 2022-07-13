@@ -82,7 +82,7 @@ public class NotificationController {
 			if (event == null) {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 			}
-			return ResponseEntity.ok(event.getNotifications());
+			return ResponseEntity.ok(event.getActiveNotifications());
 		} catch (DaoException e) {
 			ErrorMessage errMsg = new ErrorMessage();
 			errMsg.setData(e.getMessage());
@@ -103,6 +103,7 @@ public class NotificationController {
 			}
 
 			notificationService.addNotification(owner, event, notification);
+			notification = notificationService.getNotificationById(notification.getNotificationId());
 			this.notificationManager.addNotification(notification);
 
 			return ResponseEntity.status(HttpStatus.CREATED).body(notification);
@@ -137,6 +138,8 @@ public class NotificationController {
 			for (Notification notification : notifications) {
 				notificationService.addNotification(owner, event, notification);
 			}
+			List<Integer> notificationIds = notifications.stream().map(notification -> notification.getNotificationId()).toList();
+			notifications = notificationService.getNotificationsByIds(notificationIds); 
 			this.notificationManager.addNotifications(notifications);
 
 			return ResponseEntity.status(HttpStatus.CREATED).body(notifications);

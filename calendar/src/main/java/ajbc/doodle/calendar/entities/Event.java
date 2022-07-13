@@ -151,6 +151,17 @@ public class Event {
         this.guests.remove(user);
         user.getEvents().remove(this);
     }
+    
+    /**
+     * Returns non-disable notifications
+     * @return
+     */
+    public List<Notification> getActiveNotifications() {
+    	return this.getNotifications()
+    			.stream()
+    			.filter(notification -> notification.getDisable() == 0)
+    			.toList();
+    }
 
     @Override
     public boolean equals(Object obj) {

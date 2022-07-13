@@ -48,7 +48,7 @@ public class NotificationService {
 	public void addNotification(User owner, Event event, Notification notification)
 			throws DaoException, ForbiddenException {
 
-		if ((long) event.getNotifications().size() >= NOTIFICATIONS_LIMIT) {
+		if ((long) event.getActiveNotifications().size() >= NOTIFICATIONS_LIMIT) {
 			throw new ForbiddenException("The owner can add only " + NOTIFICATIONS_LIMIT + " notifications per event");
 		}
 

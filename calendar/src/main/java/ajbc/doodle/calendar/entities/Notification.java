@@ -133,11 +133,11 @@ public class Notification {
     }
     public LocalDateTime getNotificationDateTime() {
         LocalDateTime eventTime = this.event.getStartDate();
-        return unit == Unit.MINUTES ? eventTime.minusHours(timeBeforeEvent) : eventTime.minusMinutes(timeBeforeEvent);
+        return unit == Unit.HOURS ? eventTime.minusHours(timeBeforeEvent) : eventTime.minusMinutes(timeBeforeEvent);
     }
 
     public Long getRemainingSecondsToNotification() {
-        LocalDateTime eventTime = this.event.getStartDate();
+        LocalDateTime eventTime = this.getNotificationDateTime();
         Duration duration = Duration.between(LocalDateTime.now(), eventTime);
         return duration.getSeconds();
     }

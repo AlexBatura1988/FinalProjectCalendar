@@ -62,7 +62,7 @@ public class User {
 	private String email;
 	private LocalDate birthDate;
 	private LocalDate joinDate;
-	//@JsonIgnore
+	@JsonIgnore
 	private Integer disable;
 	
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

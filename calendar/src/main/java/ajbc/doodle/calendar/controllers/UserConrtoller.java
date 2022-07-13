@@ -76,14 +76,6 @@ public class UserConrtoller {
 		return ResponseEntity.ok(users);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-
 	@RequestMapping(method = RequestMethod.GET, path = "/email/{email}")
 	public ResponseEntity<?> getUserByEmail(@PathVariable String email) throws DaoException {
 		try {
@@ -216,8 +208,6 @@ public class UserConrtoller {
 				
 			}
 			
-			
-
 			return ResponseEntity.ok().body("User unsubscribed");
 		} catch (DaoException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

@@ -32,7 +32,7 @@ public class NotificationManager {
 				public int compare(Notification n1, Notification n2) {
 					return n1.getNotificationDateTime().compareTo(n2.getNotificationDateTime());
 				}
-			});
+			});  
 
 	private final WebPushManager webPushManager;
 

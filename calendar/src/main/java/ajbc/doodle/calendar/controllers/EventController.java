@@ -130,7 +130,7 @@ public class EventController {
 			eventService.addEvents(events, userId, guestsIds);
 			
 			for(Event event : events) {
-				this.notificationManager.addNotifications(new ArrayList<Notification>(event.getNotifications()));
+				this.notificationManager.addNotifications(event.getActiveNotifications());
 			}
 			
 			return ResponseEntity.status(HttpStatus.CREATED).body(events);
@@ -170,6 +170,7 @@ public class EventController {
 			}
 			event.setEventId(eventId);
 			event = eventService.updateEvent(event);
+			this.notificationManager.updateNotifications(event.getActiveNotifications());
 			return ResponseEntity.status(HttpStatus.OK).body(event);
 		} catch (DaoException e) {
 			ErrorMessage errorMsg = new ErrorMessage();
@@ -201,6 +202,7 @@ public class EventController {
 			// Update the events
 			for (Event event : events) {
 				newEvents.add(eventService.updateEvent(event));
+				this.notificationManager.updateNotifications(event.getActiveNotifications());
 				 
 			}
 			return ResponseEntity.status(HttpStatus.OK).body(newEvents);
@@ -226,7 +228,9 @@ public class EventController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
 			}
 
+			List<Notification> eventNotifications = event.getActiveNotifications();
 			eventService.deleteEvent(event, soft);
+			this.notificationManager.removeNotifications(eventNotifications);
 			return ResponseEntity.ok("The Event deleted");
 		} catch (DaoException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -246,7 +250,9 @@ public class EventController {
 				}
 			}
 			for (Event event : events) {
+				List<Notification> eventNotifications = event.getActiveNotifications();
 				eventService.deleteEvent(event, soft);
+				this.notificationManager.removeNotifications(eventNotifications);
 
 			}
 			return ResponseEntity.ok("The Events deleted");

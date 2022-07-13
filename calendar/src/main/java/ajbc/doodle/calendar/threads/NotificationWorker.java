@@ -46,12 +46,17 @@ public class NotificationWorker implements Runnable {
 		Application.logger.info(Thread.currentThread().getName() + ": started");
 		while (true) {
 			Notification notification = this.queue.poll();
+			
 			try {
 				if (notification == null) {
 					Application.logger.info(Thread.currentThread().getName()
 							+ ": The queue is empty. going to sleep for " + DEFAULT_SLEEP_TIME + " milliseconds");
 					Thread.sleep(DEFAULT_SLEEP_TIME);
+				} else if(notification.getDisable() == 1) {
+					// ignore non-active notifications
+					Application.logger.warn(Thread.currentThread().getName() + ": got a non-active notification: " + notification.getNotificationId());
 				} else {
+					Application.logger.info("DEBUG: polling notification id: " + notification.getNotificationId() + " notification time: " + notification.getNotificationDateTime());
 					LocalDateTime now = LocalDateTime.now();
 					if (now.compareTo(notification.getNotificationDateTime()) >= 0) {
 						// Send push message
@@ -69,12 +74,12 @@ public class NotificationWorker implements Runnable {
 							Application.logger.info(Thread.currentThread().getName()
 									+ ": no user is subscribe to eventId: " + notification.getEventId());
 						}
-
+						Application.logger.info("DEBUG ----------");
 						this.notificationService.deleteNotification(notification, true);
 
 					} else {
 						this.queue.add(notification);
-						Long remainingSeconds = notification.getRemainingSecondsToNotification() * 1000;
+						Long remainingSeconds = notification.getRemainingSecondsToNotification() * 1000 + 1000; // add 1 sec to different from lower quantity
 						Application.logger.info(Thread.currentThread().getName()
 								+ ": the notification time is not now. going to sleep for " + remainingSeconds
 								+ " milliseconds");
@@ -84,10 +89,6 @@ public class NotificationWorker implements Runnable {
 			} catch (InterruptedException e) {
 				Application.logger.info(Thread.currentThread().getName()
 						+ ": an InterruptedException occurred. going to check the queue again");
-
-				if (notification != null && !this.queue.contains(notification)) {
-					this.queue.add(notification);
-				}
 			} catch (DaoException e) {
 				Application.logger.error(e.getMessage());
 				Application.logger.error(Thread.currentThread().getName()
