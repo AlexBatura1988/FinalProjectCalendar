@@ -16,6 +16,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -36,7 +37,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "users")
-@Where(clause = "disable = 0")
+//@Where(clause = "disable = 0")
 public class User {
 
 	public User(String firstName, String lastName, String email, LocalDate birthDate, LocalDate joinDate,
@@ -53,6 +54,7 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@NaturalId
 	private Integer userId;
 	private String firstName;
 	private String lastName;
@@ -60,7 +62,7 @@ public class User {
 	private String email;
 	private LocalDate birthDate;
 	private LocalDate joinDate;
-	@JsonIgnore
+	//@JsonIgnore
 	private Integer disable;
 	
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -82,15 +84,24 @@ public class User {
 	@Where(clause = "disable = 0")
 	private Set<Event> events = new HashSet<>();
 	
-	public void removeAllEvents() {
-        for(Event event : this.getEvents()) {
+	public Set<Event> removeAllEvents() {
+		 Set<Event> events = this.getEvents();
+        for(Event event :events) {
             this.removeEvent(event);
         }
+        return events;
     }
 
-    private void removeEvent(Event event) {
+    public void removeEvent(Event event) {
         this.getEvents().remove(event);
         event.getGuests().remove(this);
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User u) {
+            return this.userId.equals(u.getUserId());
+        }
+        return false;
     }
 
 }

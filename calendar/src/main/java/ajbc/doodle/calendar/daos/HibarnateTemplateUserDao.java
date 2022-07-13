@@ -48,8 +48,8 @@ public class HibarnateTemplateUserDao implements UserDao {
 	}
 
 	@Override
-	public void updateUser(User user) throws DaoException {
-		template.merge(user);
+	public User updateUser(User user) throws DaoException {
+		return template.merge(user);
 	}
 
 //	 @Override
@@ -60,8 +60,7 @@ public class HibarnateTemplateUserDao implements UserDao {
 //	    }
 
 	@Override
-	public void hardDeleteUser(Integer userId) throws DaoException {
-		User user = getUser(userId);
+	public void deleteUser(User user) throws DaoException {
 		template.delete(user);
 	}
 
@@ -111,11 +110,7 @@ public class HibarnateTemplateUserDao implements UserDao {
 		return (List<User>) template.findByCriteria(criteria);
 	}
 
-	@Override
-	public void hardDeleteAllUsers() throws DaoException {
-
-		template.deleteAll(getAllUsers());
-	}
+	
 	
 	@Override
     public List<User> getSubscribedUserByNotificationId(Integer notificationId) throws DaoException {

@@ -29,25 +29,22 @@ public class SeedUser {
 	private UserService userService;
 	@Autowired
 	private EventService eventService;
-	@Autowired
-	private NotificationService notificationService;
+	
 
 	@EventListener
 	public void seedUserDB(ContextRefreshedEvent event) throws DaoException, NotAuthorizedException {
-//		seedUsers();
-//		 seedEvents();
-		//seedNotifications();
+		seedUsers();
+		seedEvents();
 
-	} 
+	}
 
 	public void seedUsers() throws DaoException {
 
-		// userService.hardDeleteAllUsers();
-		userService.createUser(
+		userService.createUserIfNotExists(
 				new User("Alex", "batura", "gmail.com", LocalDate.of(1988, 1, 4), LocalDate.of(2020, 2, 3), 0));
-		userService.createUser(
+		userService.createUserIfNotExists(
 				new User("Arina", "batura", "gmail1.com", LocalDate.of(1990, 1, 4), LocalDate.of(2021, 2, 3), 0));
-		userService.createUser(
+		userService.createUserIfNotExists(
 				new User("marina", "ttt", "gmail2.com", LocalDate.of(1990, 1, 5), LocalDate.of(2021, 6, 3), 0));
 
 	}
@@ -55,17 +52,14 @@ public class SeedUser {
 	public void seedEvents() throws DaoException {
 		List<User> users = userService.getAllUsers();
 
-		eventService.addEvent(new Event(users.get(1), "test-6", true, LocalDateTime.of(2022, 7, 11, 22, 15),
-				LocalDateTime.of(2022, 7, 11, 23, 0), "holon", "test description", RepeatingOptions.DAILY, users));
+		for (User user : users) {
+			if (user.getEvents().size() > 0) {
+				return;
+			}
+		}
 
-	}
-
-	public void seedNotifications() throws DaoException {
-
-		User user = userService.getUser(1);
-		Event event = eventService.getEventById(1);
-
-		notificationService.addNotification(new Notification(user, event, "testTitle", Unit.HOURS, 2));
+		eventService.addEvent(new Event(users.get(1), "test", true, LocalDateTime.of(2022, 7, 13, 12, 40),
+				LocalDateTime.of(2022, 7, 13, 23, 0), "holon", "test description", RepeatingOptions.DAILY, users));
 
 	}
 

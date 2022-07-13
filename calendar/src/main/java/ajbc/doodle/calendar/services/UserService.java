@@ -2,13 +2,16 @@ package ajbc.doodle.calendar.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import ajbc.doodle.calendar.daos.DaoException;
+import ajbc.doodle.calendar.daos.EventDao;
 import ajbc.doodle.calendar.daos.UserDao;
+import ajbc.doodle.calendar.entities.Event;
 import ajbc.doodle.calendar.entities.User;
 import ajbc.doodle.calendar.entities.webpush.Subscription;
 
@@ -18,12 +21,25 @@ public class UserService {
 	@Autowired
 	@Qualifier("htUsDao")
 	UserDao userDao;
+	
+	@Autowired
+    @Qualifier("htEvDao")
+    private EventDao eventDao;
+
+    @Autowired
+    private NotificationService notificationService;
 
 	public void createUser(User user) throws DaoException {
 		userDao.createUser(user);
 	}
+	
+	public void createUserIfNotExists(User user) throws DaoException {
+        if (!this.isUserExist(user.getEmail())) {
+            userDao.createUser(user);
+        }
+    }
 
-	public void createUsers(List<User> users) throws DaoException {
+	public void createUsers(Set<User> users) throws DaoException {
 		for (User user : users) {
 			this.createUser(user);
 		}
@@ -51,6 +67,19 @@ public class UserService {
 			return false;
 		}
 	}
+	
+	
+     // Return if the user exists in the DB
+     
+    public Boolean isUserExist(String email) {
+        try {
+            userDao.getUser(email);
+            return true;
+        } catch (DaoException e) {
+            return false;
+        }
+    }
+
 
 	public List<User> getUsersByEventId(Integer eventId) throws DaoException {
 		return userDao.getUsersByEventId(eventId);
@@ -65,20 +94,30 @@ public class UserService {
 	}
 
 	public void deleteUser(Integer userId, Boolean soft) throws DaoException {
+		User user = getUser(userId);
 		if (soft) {
-			User user = getUser(userId);
+			
 			user.setDisable(1);
 			updateUser(user);
 		} else {
-			User user = getUser(userId);
-//	            user.removeAllEvents();
-//	            this.updateUser(user);
-			userDao.hardDeleteUser(userId);
+			for (Event event : user.getEvents()) {
+				if (event.getOwnerId().equals(user.getUserId())) {
+					event.removeGuest(user);
+					event.setOwner(null);
+                    eventDao.deleteEvent(event);
+					
+				}else {
+                    event.removeGuest(user);
+                    eventDao.updateEvent(event);
+				}
+				
+			}
+			userDao.deleteUser(user);
 		}
 	}
 
-	public void updateUser(User user) throws DaoException {
-		userDao.updateUser(user);
+	public User updateUser(User user) throws DaoException {
+		return userDao.updateUser(user);
 	}
 
 	public void subscribeUser(Subscription subscription, User user) throws DaoException {
@@ -109,9 +148,7 @@ public class UserService {
 		return userDao.getAllUsers();
 	}
 
-	public void hardDeleteAllUsers() throws DaoException {
-		userDao.hardDeleteAllUsers();
-	}
+	
 
 	public List<User> getSubscribedUserByNotificationId(Integer notificationId) throws DaoException {
 		return userDao.getSubscribedUserByNotificationId(notificationId);

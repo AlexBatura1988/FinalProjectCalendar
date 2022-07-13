@@ -1,6 +1,7 @@
 package ajbc.doodle.calendar.services;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -117,6 +118,14 @@ public class NotificationService {
 		}
 		
 	}
+	
+	/**
+     * Hard delete the notifications
+     * @param notifications - the notifications to delete
+     */
+    public void hardDeleteNotifications(Set<Notification> notifications) throws DaoException {
+        notificationDao.deleteNotifications(notifications);
+    }
 	
 
 

@@ -72,22 +72,16 @@ public class NotificationManager {
 		}
 	}
 
-	/**
-	 * Add a new notification to the queue
-	 *
-	 * @param notification - and new notification
-	 */
+
+	  //Add a new notification to the queue
 	public void addNotification(Notification notification) {
 		this.notificationsQueue.add(notification);
 		this.workersGroup.interrupt();
 		Application.logger.info("Adding one notification to the queue");
 	}
 
-	/**
-	 * Add multiple notifications to the queue
-	 *
-	 * @param notifications - the new notification
-	 */
+	
+	 // Add multiple notifications to the queue
 	public void addNotifications(List<Notification> notifications) {
 		this.notificationsQueue.addAll(notifications);
 		Application.logger.info("DEBUG: " + notifications.size());
@@ -95,33 +89,25 @@ public class NotificationManager {
 		Application.logger.info("Adding " + notifications.size() + " notifications to the queue");
 	}
 
-	/**
-	 * Remove a notification from the queue
-	 *
-	 * @param notification - the notification to remove
-	 */
+
+	 // Remove a notification from the queue
+	 
 	public void removeNotification(Notification notification) {
 		Boolean changed = this.notificationsQueue.remove(notification);
 		this.workersGroup.interrupt();
 		Application.logger.info("Removing notification from the queue");
 	}
 
-	/**
-	 * Remove multiple notifications
-	 *
-	 * @param notifications - the notifications to remove
-	 */
+	
+	 // Remove multiple notifications
 	public void removeNotifications(List<Notification> notifications) {
 		this.notificationsQueue.removeAll(notifications);
 		this.workersGroup.interrupt();
 		Application.logger.info("Removing " + notifications.size() + " notifications from the queue");
 	}
 
-	/**
-	 * Replace the old notification with the new one
-	 *
-	 * @param notification - the modified notification
-	 */
+	
+	 // Replace the old notification with the new one
 	public void updateNotification(Notification notification) {
 		this.removeNotification(notification);
 		this.addNotification(notification);
@@ -129,11 +115,8 @@ public class NotificationManager {
 		Application.logger.info("Updating notification in the queue");
 	}
 
-	/**
-	 * Replace the old notifications with the new ones
-	 *
-	 * @param notifications - the modified notifications
-	 */
+	
+	 // Replace the old notifications with the new ones	 
 	public void updateNotifications(List<Notification> notifications) {
 		this.removeNotifications(notifications);
 		this.addNotifications(notifications);

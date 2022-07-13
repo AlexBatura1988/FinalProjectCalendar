@@ -1,6 +1,7 @@
 package ajbc.doodle.calendar.daos;
 
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
@@ -53,25 +54,26 @@ public class HibernateTemplateNotifDao implements NotificationDao {
 
 	@Override
 	public void deleteNotification(Notification notification) throws DaoException {
-//		Notification notif = getNotificationById(notification);
-//		notif.setDisable(1);
-//		;
-//		updateNotification(notif);
 		
 		template.delete(notification);
 	}
+	
+	 @Override
+	    public void deleteNotifications(Set<Notification> notifications) throws DaoException {
+	        template.deleteAll(notifications);
+	    }
 
-	@Override
-	public void hardDeleteNotificationById() throws DaoException {
-		// TODO Auto-generated method stub
-		NotificationDao.super.hardDeleteNotificationById();
-	}
-
-	@Override
-	public void deleteAllNotifications() throws DaoException {
-		// TODO Auto-generated method stub
-		NotificationDao.super.deleteAllNotifications();
-	}
+//	@Override
+//	public void hardDeleteNotificationById() throws DaoException {
+//		// TODO Auto-generated method stub
+//		NotificationDao.super.hardDeleteNotificationById();
+//	}
+//
+//	@Override
+//	public void deleteAllNotifications() throws DaoException {
+//		// TODO Auto-generated method stub
+//		NotificationDao.super.deleteAllNotifications();
+//	}
 
 	@Override
 	public long count() throws DaoException {

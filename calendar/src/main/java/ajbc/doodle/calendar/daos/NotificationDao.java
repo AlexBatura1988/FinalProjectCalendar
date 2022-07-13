@@ -1,6 +1,7 @@
 package ajbc.doodle.calendar.daos;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,6 +69,11 @@ public interface NotificationDao {
 	public default void deleteNotification(Notification notificationId) throws DaoException {
 		throw new DaoException("Method not implemented");
 	}
+	
+	@Transactional(readOnly = false)
+    public default void deleteNotifications(Set<Notification> notifications) throws DaoException {
+        throw new DaoException("Method not implemented");
+    }
 
 	@Transactional(readOnly = false)
 	public default void hardDeleteNotificationById() throws DaoException {

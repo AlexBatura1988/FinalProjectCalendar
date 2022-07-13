@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
@@ -23,6 +24,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.JoinColumn;
@@ -46,6 +48,7 @@ public class Event {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@NaturalId
 	private Integer eventId;
 	private String title;
 	private boolean isAllDay;
@@ -59,7 +62,7 @@ public class Event {
 	private RepeatingOptions repeatingOptions;
 	@JsonIgnore
 	private Integer disable = 0;
-    
+
 	@Column(insertable = false, updatable = false)
 	private Integer ownerId;
 
@@ -68,18 +71,17 @@ public class Event {
 	@JoinColumn(name = "ownerId")
 	@Where(clause = "disable = 0")
 	private User owner;
-	
+
 	@JsonIgnore
-    @OneToMany(mappedBy = "event", cascade = {CascadeType.MERGE,CascadeType.REMOVE}, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "event", cascade = { CascadeType.MERGE, CascadeType.REMOVE }, fetch = FetchType.EAGER)
 	@Where(clause = "disable = 0")
-    private Set<Notification> notifications = new HashSet<>();
+	private Set<Notification> notifications = new HashSet<>();
 
 	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.EAGER)
 	@JoinTable(name = "usersEvents", joinColumns = @JoinColumn(name = "eventId"), inverseJoinColumns = @JoinColumn(name = "userId"))
 	@Where(clause = "disable = 0")
-	private List<User> guests;
-	
+	private Set<User> guests = new HashSet<>();
 
 	public Event(String title, Boolean isAllDay, LocalDateTime startDate, LocalDateTime endDate, String address,
 			String description, RepeatingOptions repeatingOptions, List<User> guests) {
@@ -91,7 +93,7 @@ public class Event {
 		this.address = address;
 		this.description = description;
 		this.repeatingOptions = repeatingOptions;
-		this.guests = guests;
+		this.guests = new HashSet<>(guests);
 
 	}
 
@@ -108,31 +110,54 @@ public class Event {
 	}
 
 	public void addGuests(List<User> guests) {
-		this.setGuests(Stream.concat(this.getGuests().stream(), guests.stream()).toList());
+		Set<User> guestsSet = new HashSet<>(guests);
+		this.setGuests(Stream.concat(this.getGuests().stream(), guests.stream()).collect(Collectors.toSet()));
 	}
 	
+	public void addGuest(User guest) {
+		this.guests.add(guest);
+	}
+
 	public void merge(Event event) {
-        if (!this.title.equals(event.title)) {
-            this.title = event.title;
+		if (!this.title.equals(event.title)) {
+			this.title = event.title;
+		}
+		if (this.isAllDay != event.isAllDay) {
+			this.isAllDay = event.isAllDay;
+		}
+		if (!this.startDate.equals(event.startDate)) {
+			this.startDate = event.startDate;
+		}
+		if (!this.endDate.equals(event.endDate)) {
+			this.endDate = event.endDate;
+		}
+		if (!this.address.equals(event.address)) {
+			this.address = event.address;
+		}
+		if (!this.description.equals(event.description)) {
+			this.description = event.description;
+		}
+		if (!this.repeatingOptions.equals(event.repeatingOptions)) {
+			this.repeatingOptions = event.repeatingOptions;
+		}
+	}
+	public void removeGuests() {
+        for (User user : this.getGuests()) {
+            this.removeGuest(user);
         }
-        if (this.isAllDay != event.isAllDay) {
-            this.isAllDay = event.isAllDay;
+    }
+
+    public void removeGuest(User user) {
+        this.guests.remove(user);
+        user.getEvents().remove(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Event e) {
+            return this.eventId.equals(e.getEventId());
         }
-        if (!this.startDate.equals(event.startDate)) {
-            this.startDate = event.startDate;
-        }
-        if (!this.endDate.equals(event.endDate)) {
-            this.endDate = event.endDate;
-        }
-        if (!this.address.equals(event.address)) {
-            this.address = event.address;
-        }
-        if (!this.description.equals(event.description)) {
-            this.description = event.description;
-        }
-        if (!this.repeatingOptions.equals(event.repeatingOptions)) {
-            this.repeatingOptions = event.repeatingOptions;
-        }
+        return false;
     }
 
 }

@@ -2,6 +2,7 @@ package ajbc.doodle.calendar.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -39,15 +40,12 @@ public class EventService {
 	public void addEvent(Event event, Integer userId, List<Integer> guestsIds) throws DaoException {
 		User owner = userService.getUser(userId);
 		event.setOwner(owner);
-		event.setGuests(List.of(owner));
+		event.addGuest(owner);
 		if (guestsIds != null) {
 			List<User> guests = userService.getUsersByIds(guestsIds);
-			// event.setGuests(guests);
 			event.addGuests(guests);
 		}
 		this.addEvent(event);
-		Notification notification = new Notification(owner, event);
-        notificationService.addNotification(notification);
 	}
 	
 	public void addEvent(Event event) throws DaoException {

@@ -1,7 +1,9 @@
 package ajbc.doodle.calendar.controllers;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -45,7 +47,7 @@ public class UserConrtoller {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, path = "/multiple")
-	public ResponseEntity<?> createUsers(@RequestBody List<User> users) throws DaoException {
+	public ResponseEntity<?> createUsers(@RequestBody Set<User> users) throws DaoException {
 		try {
 			userService.createUsers(users);
 			return ResponseEntity.status(HttpStatus.CREATED).body(users);
@@ -58,12 +60,29 @@ public class UserConrtoller {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<User>> getAllUsers() throws DaoException {
+	public ResponseEntity<?> getAllUsers() throws DaoException {
 		List<User> users = userService.getAllUsers();
 		if (users == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		return ResponseEntity.ok(users);
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, path="notification/{notificationId}")
+	public ResponseEntity<?> getSubscribedUserByNotificationId(@PathVariable Integer notificationId) throws DaoException {
+		List<User> users = userService.getSubscribedUserByNotificationId(notificationId);
+		if (users == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		return ResponseEntity.ok(users);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@RequestMapping(method = RequestMethod.GET, path = "/email/{email}")
 	public ResponseEntity<?> getUserByEmail(@PathVariable String email) throws DaoException {
@@ -93,7 +112,7 @@ public class UserConrtoller {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, path = "/event/{eventId}")
-	public ResponseEntity<List<User>> getUsersByEventId(@PathVariable Integer eventId) throws DaoException {
+	public ResponseEntity<?> getUsersByEventId(@PathVariable Integer eventId) throws DaoException {
 		List<User> users = userService.getUsersByEventId(eventId);
 		if (users == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -127,7 +146,7 @@ public class UserConrtoller {
 	public ResponseEntity<?> updateUser(@PathVariable Integer userId, @RequestBody User user) {
 		try {
 			user.setUserId(userId);
-			userService.updateUser(user);
+			user = userService.updateUser(user);
 			return ResponseEntity.status(HttpStatus.OK).body(user);
 		} catch (DaoException e) {
 			ErrorMessage errorMsg = new ErrorMessage();
@@ -137,7 +156,7 @@ public class UserConrtoller {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.PUT)
+	@RequestMapping(method = RequestMethod.PUT,path = "/multiple")
 	public ResponseEntity<?> updateUsers(@RequestBody List<User> users) {
 		try {
 			// Validate that the users have the emailId field
@@ -148,12 +167,13 @@ public class UserConrtoller {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
 				}
 			}
+			List<User> newUsers = new ArrayList<>();
 
 			// Update the users
 			for (User user : users) {
-				userService.updateUser(user);
+				newUsers.add(userService.updateUser(user));
 			}
-			return ResponseEntity.status(HttpStatus.OK).body(users);
+			return ResponseEntity.status(HttpStatus.OK).body(newUsers);
 		} catch (DaoException e) {
 			ErrorMessage errorMsg = new ErrorMessage();
 			errorMsg.setData(e.getMessage());

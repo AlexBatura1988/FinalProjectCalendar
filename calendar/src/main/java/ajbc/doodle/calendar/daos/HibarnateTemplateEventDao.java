@@ -75,6 +75,13 @@ public class HibarnateTemplateEventDao implements EventDao {
 		return (List<Event>) template.findByCriteria(criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY));
 	}
 	
+	@Override
+    public List<Event> getAllEventsByOwnerId(Integer userId) throws DaoException {
+        DetachedCriteria criteria = DetachedCriteria.forClass(Event.class);
+        criteria.add(Restrictions.eq("ownerId", userId));
+        return (List<Event>) template.findByCriteria(criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY));
+    }
+	
 	 @Override
 	    public List<Event> getUpcomingEventsByUserId(Integer userId) throws DaoException {
 	        DetachedCriteria criteria = DetachedCriteria.forClass(Event.class, "event");

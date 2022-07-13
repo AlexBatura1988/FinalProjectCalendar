@@ -105,7 +105,9 @@ public class EventController {
 		}
 		return ResponseEntity.ok(events);
 	}
-
+    
+	
+	// error
 	@RequestMapping(method = RequestMethod.POST, path = "/user/{userId}")
 	public ResponseEntity<?> addEventByUser(@RequestBody Event event, @PathVariable Integer userId,
 			@RequestParam(required = false) List<Integer> guestsIds) {
@@ -153,6 +155,8 @@ public class EventController {
 		}
 
 	}
+	
+	//check
 
 	@RequestMapping(method = RequestMethod.PUT, path = "/user/{ownerId}/eventId/{eventId}")
 	public ResponseEntity<?> updateEvent(@PathVariable Integer ownerId, @PathVariable Integer eventId,
@@ -207,6 +211,8 @@ public class EventController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMsg);
 		}
 	}
+	
+	//check
 
 	@RequestMapping(method = RequestMethod.DELETE, path = "/user/{ownerId}/id/{eventId}")
 	public ResponseEntity<?> deleteEvent(@PathVariable Integer ownerId, @PathVariable Integer eventId,
