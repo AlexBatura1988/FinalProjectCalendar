@@ -70,7 +70,7 @@ public class Event {
 	private User owner;
 	
 	@JsonIgnore
-    @OneToMany(mappedBy = "event", cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "event", cascade = {CascadeType.MERGE,CascadeType.REMOVE}, fetch = FetchType.EAGER)
 	@Where(clause = "disable = 0")
     private Set<Notification> notifications = new HashSet<>();
 

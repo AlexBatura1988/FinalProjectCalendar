@@ -155,7 +155,7 @@ public class EventController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, path = "/user/{ownerId}/eventId/{eventId}")
-	public ResponseEntity<?> updateEvents(@PathVariable Integer ownerId, @PathVariable Integer eventId,
+	public ResponseEntity<?> updateEvent(@PathVariable Integer ownerId, @PathVariable Integer eventId,
 			@RequestBody Event event) {
 		try {
 
@@ -165,7 +165,7 @@ public class EventController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
 			}
 			event.setEventId(eventId);
-			eventService.updateEvent(event);
+			event = eventService.updateEvent(event);
 			return ResponseEntity.status(HttpStatus.OK).body(event);
 		} catch (DaoException e) {
 			ErrorMessage errorMsg = new ErrorMessage();
@@ -176,7 +176,7 @@ public class EventController {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, path = "multiple/user/{ownerId}")
-	public ResponseEntity<?> updateEvent(@PathVariable Integer ownerId, @RequestBody List<Event> events) {
+	public ResponseEntity<?> updateEvents(@PathVariable Integer ownerId, @RequestBody List<Event> events) {
 		try {
 			// Validate that the users have the emailId field
 			for (Event event : events) {
@@ -192,12 +192,14 @@ public class EventController {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
 				}
 			}
+			List<Event> newEvents = new ArrayList<>();
 
 			// Update the events
 			for (Event event : events) {
-				eventService.updateEvent(event);
+				newEvents.add(eventService.updateEvent(event));
+				 
 			}
-			return ResponseEntity.status(HttpStatus.OK).body(events);
+			return ResponseEntity.status(HttpStatus.OK).body(newEvents);
 		} catch (DaoException e) {
 			ErrorMessage errorMsg = new ErrorMessage();
 			errorMsg.setData(e.getMessage());

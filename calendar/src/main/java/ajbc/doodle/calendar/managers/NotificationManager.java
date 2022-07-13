@@ -22,7 +22,7 @@ import lombok.Setter;
 public class NotificationManager {
 
 	private static final int QUEUE_INITIAL_CAPACITY = 11;
-	private static final int NUM_OF_THREAD = 2;
+	private static final int NUM_OF_THREAD = 1;
 
 	private ThreadGroup workersGroup;
 

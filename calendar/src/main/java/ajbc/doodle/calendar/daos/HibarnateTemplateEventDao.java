@@ -26,8 +26,13 @@ public class HibarnateTemplateEventDao implements EventDao {
 	} 
   
 	@Override
-	public void updateEvent(Event event) throws DaoException {
-		template.merge(event);
+	public Event updateEvent(Event event) throws DaoException {
+		return template.merge(event);
+	}
+	
+	@Override
+    public void deleteEvent(Event event) throws DaoException {
+        template.delete(event);
 	}
 
 	@Override

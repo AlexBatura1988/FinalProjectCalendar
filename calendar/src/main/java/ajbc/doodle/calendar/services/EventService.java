@@ -46,6 +46,8 @@ public class EventService {
 			event.addGuests(guests);
 		}
 		this.addEvent(event);
+		Notification notification = new Notification(owner, event);
+        notificationService.addNotification(notification);
 	}
 	
 	public void addEvent(Event event) throws DaoException {
@@ -100,10 +102,10 @@ public class EventService {
 		return eventDao.getAllEventsEvents(startTime, endTime);
 	}
 
-	public void updateEvent(Event event) throws DaoException {
+	public Event updateEvent(Event event) throws DaoException {
 		Event oldEvent = this.getEventById(event.getEventId());
 		oldEvent.merge(event);
-		eventDao.updateEvent(oldEvent);
+		return eventDao.updateEvent(oldEvent);
 	}
 
 	public void deleteEvent(Event event, Boolean soft) throws DaoException {
@@ -111,7 +113,7 @@ public class EventService {
 			event.setDisable(1);
 			eventDao.updateEvent(event);
 		} else {
-			// TODO
+			 eventDao.deleteEvent(event);
 		}
 	}
 
