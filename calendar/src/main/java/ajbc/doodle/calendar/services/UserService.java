@@ -100,6 +100,7 @@ public class UserService {
 			user.setDisable(1);
 			updateUser(user);
 		} else {
+			// Hard delete
 			for (Event event : user.getEvents()) {
 				if (event.getOwnerId().equals(user.getUserId())) {
 					event.removeGuest(user);

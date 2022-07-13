@@ -63,7 +63,7 @@ public class Notification {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
 	@JoinColumn(name = "ownerId")
-	@Where(clause = "disable = 0")
+//	@Where(clause = "disable = 0")
 	private User owner;
 
 	/**
@@ -79,7 +79,7 @@ public class Notification {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.MERGE})
 	@JoinColumn(name = "eventId")
-	@Where(clause = "disable = 0")
+//	@Where(clause = "disable = 0")
 	private Event event;
 
 	/**

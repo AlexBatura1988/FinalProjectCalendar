@@ -43,7 +43,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name = "Events")
-@Where(clause = "disable = 0")
+//@Where(clause = "disable = 0")
 public class Event {
 
 	@Id
@@ -74,13 +74,13 @@ public class Event {
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "event", cascade = { CascadeType.MERGE, CascadeType.REMOVE }, fetch = FetchType.EAGER)
-	@Where(clause = "disable = 0")
+//	@Where(clause = "disable = 0")
 	private Set<Notification> notifications = new HashSet<>();
-
+ 
 	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.EAGER)
 	@JoinTable(name = "usersEvents", joinColumns = @JoinColumn(name = "eventId"), inverseJoinColumns = @JoinColumn(name = "userId"))
-	@Where(clause = "disable = 0")
+//	@Where(clause = "disable = 0")
 	private Set<User> guests = new HashSet<>();
 
 	public Event(String title, Boolean isAllDay, LocalDateTime startDate, LocalDateTime endDate, String address,

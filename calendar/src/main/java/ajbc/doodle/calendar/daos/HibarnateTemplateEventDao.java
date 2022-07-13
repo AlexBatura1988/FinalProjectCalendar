@@ -47,6 +47,7 @@ public class HibarnateTemplateEventDao implements EventDao {
     public List<Event> getEventsByIds(List<Integer> eventIds) throws DaoException {
         DetachedCriteria criteria = DetachedCriteria.forClass(Event.class);
         criteria.add(Restrictions.in("id", eventIds));
+        criteria.add(Restrictions.eq("disable", 0));
         return (List<Event>) template.findByCriteria(criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY));
     }
 
@@ -65,6 +66,7 @@ public class HibarnateTemplateEventDao implements EventDao {
 	@Override
 	public List<Event> getAllEvents() throws DaoException {
 		DetachedCriteria criteria = DetachedCriteria.forClass(Event.class);
+		criteria.add(Restrictions.eq("disable", 0));
 		return (List<Event>) template.findByCriteria(criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY));
 	}
 
@@ -72,6 +74,7 @@ public class HibarnateTemplateEventDao implements EventDao {
 	public List<Event> getAllEventsByUserId(Integer userId) throws DaoException {
 		DetachedCriteria criteria = DetachedCriteria.forClass(Event.class).createCriteria("guests");
 		criteria.add(Restrictions.eq("id", userId));
+		criteria.add(Restrictions.eq("disable", 0));
 		return (List<Event>) template.findByCriteria(criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY));
 	}
 	
@@ -79,6 +82,7 @@ public class HibarnateTemplateEventDao implements EventDao {
     public List<Event> getAllEventsByOwnerId(Integer userId) throws DaoException {
         DetachedCriteria criteria = DetachedCriteria.forClass(Event.class);
         criteria.add(Restrictions.eq("ownerId", userId));
+        criteria.add(Restrictions.eq("disable", 0));
         return (List<Event>) template.findByCriteria(criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY));
     }
 	
@@ -88,6 +92,7 @@ public class HibarnateTemplateEventDao implements EventDao {
 	        criteria.createAlias("event.guests", "guest");
 	        criteria.add(Restrictions.ge("startDate", LocalDateTime.now()));
 	        criteria.add(Restrictions.eq("guest.id", userId));
+	        criteria.add(Restrictions.eq("disable", 0));
 
 	        return (List<Event>) template.findByCriteria(criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY));
 	    }
@@ -99,6 +104,7 @@ public class HibarnateTemplateEventDao implements EventDao {
 	        criteria.add(Restrictions.ge("startDate", startTime));
 	        criteria.add(Restrictions.le("startDate", endTime));
 	        criteria.add(Restrictions.eq("guest.id", userId));
+	        criteria.add(Restrictions.eq("disable", 0));
 
 	        return (List<Event>) template.findByCriteria(criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY));
 	    }
@@ -107,6 +113,7 @@ public class HibarnateTemplateEventDao implements EventDao {
 	        DetachedCriteria criteria = DetachedCriteria.forClass(Event.class, "event");
 	        criteria.add(Restrictions.ge("startDate", startTime));
 	        criteria.add(Restrictions.le("startDate", endTime));
+	        criteria.add(Restrictions.eq("disable", 0));
 
 	        return (List<Event>) template.findByCriteria(criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY));
 	    }

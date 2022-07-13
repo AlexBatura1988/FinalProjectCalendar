@@ -181,7 +181,7 @@ public class UserConrtoller {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMsg);
 		}
 	}
-
+ 
 	@RequestMapping(method = RequestMethod.DELETE, path = "/id/{id}")
 	public ResponseEntity<?> deleteUser(@PathVariable Integer id, @RequestParam(defaultValue = "true") Boolean soft)
 			throws DaoException {

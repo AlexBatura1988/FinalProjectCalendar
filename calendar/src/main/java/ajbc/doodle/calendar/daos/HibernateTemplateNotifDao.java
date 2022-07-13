@@ -42,12 +42,15 @@ public class HibernateTemplateNotifDao implements NotificationDao {
 	public List<Notification> getNotificationsByIds(List<Integer> notificationIds) throws DaoException {
 		DetachedCriteria criteria = DetachedCriteria.forClass(Notification.class);
 		criteria.add(Restrictions.in("id", notificationIds));
+		criteria.add(Restrictions.eq("disable", 0));
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return (List<Notification>) template.findByCriteria(criteria);
 	}
-
+ 
 	@Override
 	public List<Notification> getAllNotifications() throws DaoException {
 		DetachedCriteria criteria = DetachedCriteria.forClass(Notification.class);
+		criteria.add(Restrictions.eq("disable", 0));
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return (List<Notification>) template.findByCriteria(criteria);
 	}

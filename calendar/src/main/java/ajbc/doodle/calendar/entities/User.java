@@ -81,9 +81,9 @@ public class User {
 
 	@JsonIgnore
 	@ManyToMany(mappedBy = "guests", cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
-	@Where(clause = "disable = 0")
+//	@Where(clause = "disable = 0")
 	private Set<Event> events = new HashSet<>();
-	
+	 
 	public Set<Event> removeAllEvents() {
 		 Set<Event> events = this.getEvents();
         for(Event event :events) {
